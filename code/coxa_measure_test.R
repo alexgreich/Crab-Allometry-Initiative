@@ -215,9 +215,9 @@ dat_sum <- dat_all %>%
 temp1 <- dat_sum %>% filter(coxa.width.tested == 31) %>% select(-Region)
 write.csv(temp1, "results/coxa test 31.csv")
 
-temp2 <- dat_sum %>% filter(coxa.width.tested == 32)
+temp2 <- dat_sum %>% filter(coxa.width.tested == 32)  %>% select(-Region)
 write.csv(temp2, "results/coxa test 32.csv")
 
-temp3 <- dat_sum %>% filter(coxa.width.tested == 33)
+temp3 <- dat_sum %>% filter(coxa.width.tested == 33)  %>% select(-Region)
 write.csv(temp3, "results/coxa test 33.csv")
 
