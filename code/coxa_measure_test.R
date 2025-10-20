@@ -159,7 +159,9 @@ dat_all %>%
     fill = ""
   ) +
   theme_minimal(base_size = 14)+
-  facet_wrap(~ coxa.width.tested)
+  facet_wrap(~ coxa.width.tested) -> fig_two
+
+ggsave("figures/fig_two.png", fig_two, width =10, height = 6, dpi = 300)
 
 #sum over location
 dat_all %>%
@@ -169,11 +171,11 @@ dat_all %>%
     true_negative == 1 ~ "True negative",
     false_negative == 1 ~ "False negative"
   ),
-  Region ="Southeast Alaska") %>%
+  Region ="") %>%
   count(Region, class, coxa.width.tested) %>%
   group_by(Region, coxa.width.tested) %>%
   mutate(prop = n / sum(n)) %>%
-  ggplot(aes(x = Region, y = prop, fill = class)) +
+  ggplot(aes(x = coxa.width.tested, y = prop, fill = class)) +
   geom_col(position = "stack") +
   scale_fill_manual(values = c(
     "True positive" = "#009E73",
@@ -183,11 +185,39 @@ dat_all %>%
   )) +
   scale_y_continuous(labels = scales::percent) +
   labs(
-    title = "Agreement and Error Types by Location",
+    title = "Agreement and Error Types",
     y = "Percent of observations",
     x = "",
     fill = ""
   ) +
-  theme_minimal(base_size = 14)+
-  facet_wrap(~ coxa.width.tested)
+  theme_minimal(base_size = 14) -> fig_one
+
+ggsave("figures/fig_one.png", fig_one, width =10, height = 6, dpi = 300)
+
+######
+#Neat, that should be good enough in the data viz department. Now let's get some stats.
+dat_sum <- dat_all %>%
+  mutate(class = case_when(
+    true_positive == 1 ~ "True positive",
+    false_positive == 1 ~ "False positive",
+    true_negative == 1 ~ "True negative",
+    false_negative == 1 ~ "False negative"
+  ),
+  Region ="") %>%
+  count(Region, class, coxa.width.tested) %>%
+  group_by(Region, coxa.width.tested) %>%
+  mutate(prop = n / sum(n))%>%
+  ungroup()
+
+#hmm. let's make some tables
+
+#Table 1: what proportion of 31mm, 32mm, and 33mm are correct
+temp1 <- dat_sum %>% filter(coxa.width.tested == 31) %>% select(-Region)
+write.csv(temp1, "results/coxa test 31.csv")
+
+temp2 <- dat_sum %>% filter(coxa.width.tested == 32)
+write.csv(temp2, "results/coxa test 32.csv")
+
+temp3 <- dat_sum %>% filter(coxa.width.tested == 33)
+write.csv(temp3, "results/coxa test 33.csv")
 
