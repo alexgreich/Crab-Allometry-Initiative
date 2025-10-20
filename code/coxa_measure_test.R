@@ -1,0 +1,193 @@
+###Test coxa measurements- Red King crab
+#Alex Reich
+
+library(tidyverse)
+
+
+##first data set collected June 2025 in st. James Bay by Chris (and Trooper??)
+dat1 <- read.csv("data/trooper test data/enforcement test data.csv")
+#View(dat1)
+names(dat1) #looks fine
+
+
+#second data set collected July 2025 in Juneau area
+dat2 <- read.csv("data/trooper test data/Legal_coxa_testing.csv")
+#note there's some values missing- ask Chris about this -FLAG
+##it's non essential info but Chris was totes like "I'll fix it!" and then forgot
+names(dat2)
+#View(dat2)
+
+
+#well, these datasets are set up differently
+##so I'll treat them differently.
+##And, can combine and look at 32-legality together at some point...
+
+
+###Anyway, it's graph time
+##what do I want to graph?
+#Carapace width size vs...
+names(dat1)
+#test data- coxa - THE REAL TEST FOR DAT 1
+ggplot(dat1) + aes(y=Carapace.width, x=factor(Coxa.legal))+ geom_point(aes(color=factor(Stick.legal)))+
+  geom_hline(yintercept=178, color="red", linetype = "dashed")+
+  facet_wrap(~factor(Coxa.legal.threshold.used))
+#the test data -stick
+ggplot(dat1) + aes(y=Carapace.width, x=factor(Stick.legal))+ geom_point()+
+  geom_hline(yintercept=178, color="red", linetype = "dashed")+
+  facet_wrap(~factor(Coxa.legal.threshold.used))
+##at 32- shows one false negative and 0 false postives
+dat1$Stick.legal/dat1$Coxa.legal #not that. Some way to tell how often stick was right at 32.
+
+
+#with dat 2
+names(dat2)
+#View(dat2)
+
+dat2$Stick.legal <- as.factor(dat2$Stick.legal)
+
+ggplot(dat2) + aes(y= Carapace.length..mm., x= factor(Legal..32mm)) + geom_point(aes(color=Stick.legal)) + 
+  geom_hline(yintercept = 138, color = "red", linetype = "dashed")+ #not a hard line here...
+  geom_hline(yintercept = 145, color = "red", linetype = "dashed")
+
+ggplot(dat2) + aes(y= Carapace.length..mm., x= factor(Legal..33mm)) + geom_point(aes(color=Stick.legal)) + 
+  geom_hline(yintercept = 138, color = "red", linetype = "dashed")+ #not a hard line here...
+  geom_hline(yintercept = 145, color = "red", linetype = "dashed")
+
+ggplot(dat2) + aes(y= Carapace.length..mm., x= factor(Legal...31mm)) + geom_point(aes(color=Stick.legal)) + 
+  geom_hline(yintercept = 138, color = "red", linetype = "dashed")+ #not a hard line here...
+  geom_hline(yintercept = 145, color = "red", linetype = "dashed")
+
+#initial what I'm seeing from here: 32 has one strike (in dat 2). 31 might be better
+##what we don't want is false postives. We don't want coxa to say "this aint legal (2)" if it IS legal.
+##that happens in dat 2, 33mm 4 times and dat 2, 32 mm, 1 time. 31mm had no false positives so far.
+
+#make these graphs better, then send to spencer, chris with 31mm or smaller as the proposed minimum coxa size. 32mm has one miss
+
+#combine datasets and look at coxa legal vs. stick legal at 31 and 32
+names(dat1)
+names(dat2)
+
+dat1_31 <- dat1 %>% filter(Coxa.legal.threshold.used == 31) %>% select(Location, Stick.legal, Coxa.legal)
+dat1_32 <- dat1 %>% filter(Coxa.legal.threshold.used == 31) %>% select(Location, Stick.legal, Coxa.legal)
+
+dat2$Location <- "Juneau"
+dat2_31 <- dat2 %>% select(Stick.legal, Legal...31mm, Location)
+dat2_31$Coxa.legal<- dat2_31$Legal...31mm
+dat2_31 <- dat2_31 %>% select(-Legal...31mm)
+
+dat2_32 <- dat2 %>% select(Stick.legal, Legal..32mm, Location)
+dat2_32$Coxa.legal<- dat2_32$Legal..32mm
+dat2_32 <- dat2_32 %>% select(-Legal..32mm)
+
+dat2_33 <- dat2 %>% select(Stick.legal, Legal..33mm, Location)
+dat2_33$Coxa.legal<- dat2_33$Legal..33mm
+dat2_33 <- dat2_33 %>% select(-Legal..33mm)
+
+dat_31 <- rbind(dat1_31, dat2_31)
+dat_32 <- rbind(dat1_32, dat2_32)
+dat_33 <- dat2_33
+
+#dat_31$ID <-  c(1:length(dat_31$Stick.legal))
+#dat_32$ID <-  c(1:length(dat_32$Stick.legal))
+
+#add false positive columns
+dat_31 <- dat_31 %>%
+  mutate(false_positive = if_else(Stick.legal == 1 & Coxa.legal == 2, 1, 0)) #it was legal, and the coxa is wrong (BAD!!)
+
+dat_32 <- dat_32 %>%
+  mutate(false_positive = if_else(Stick.legal == 1 & Coxa.legal == 2, 1, 0))
+
+dat_33 <- dat_33 %>%
+  mutate(false_positive = if_else(Stick.legal == 1 & Coxa.legal == 2, 1, 0))
+dat_31
+dat_32
+dat_33
+
+#add false negative, true postive, true negative columns
+dat_31 <- dat_31 %>%
+  mutate(true_positive = if_else(Stick.legal == 1 & Coxa.legal == 1, 1, 0), #it was legal, coxa says it's legal too
+         false_negative = if_else(Stick.legal == 2 & Coxa.legal == 1, 1, 0), #they got away with it (not as bad as false positive)
+         true_negative = if_else(Stick.legal == 2 & Coxa.legal == 2, 1, 0), #stick and coxa agree that it's sublegal
+           )
+
+dat_32 <- dat_32 %>%
+  mutate(true_positive = if_else(Stick.legal == 1 & Coxa.legal == 1, 1, 0), #it was legal, coxa says it's legal too
+         false_negative = if_else(Stick.legal == 2 & Coxa.legal == 1, 1, 0), #they got away with it (not as bad as false positive)
+         true_negative = if_else(Stick.legal == 2 & Coxa.legal == 2, 1, 0), #stick and coxa agree that it's sublegal
+  )
+
+dat_33 <- dat_33 %>%
+  mutate(true_positive = if_else(Stick.legal == 1 & Coxa.legal == 1, 1, 0), #it was legal, coxa says it's legal too
+         false_negative = if_else(Stick.legal == 2 & Coxa.legal == 1, 1, 0), #they got away with it (not as bad as false positive)
+         true_negative = if_else(Stick.legal == 2 & Coxa.legal == 2, 1, 0), #stick and coxa agree that it's sublegal
+  )
+
+#combine
+dat_31 <- dat_31 %>% mutate(coxa.width.tested = 31)
+dat_32 <- dat_32 %>% mutate(coxa.width.tested = 32)
+dat_33 <- dat_33 %>% mutate(coxa.width.tested = 33)
+
+dat_all <- rbind(dat_31, dat_32, dat_33)
+dat_all$coxa.width.tested <- as.factor(dat_all$coxa.width.tested)
+
+
+#data visualize
+library(cowplot)
+dat_all %>%
+  mutate(class = case_when(
+    true_positive == 1 ~ "True positive",
+    false_positive == 1 ~ "False positive",
+    true_negative == 1 ~ "True negative",
+    false_negative == 1 ~ "False negative"
+  )) %>%
+  count(Location, class, coxa.width.tested) %>%
+  group_by(Location, coxa.width.tested) %>%
+  mutate(prop = n / sum(n)) %>%
+  ggplot(aes(x = Location, y = prop, fill = class)) +
+  geom_col(position = "stack") +
+  scale_fill_manual(values = c(
+    "True positive" = "#009E73",
+    "True negative" = "#56B4E9",
+    "False positive" = "#E69F00",
+    "False negative" = "#D55E00"
+  )) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    title = "Agreement and Error Types by Location",
+    y = "Percent of observations",
+    x = "",
+    fill = ""
+  ) +
+  theme_minimal(base_size = 14)+
+  facet_wrap(~ coxa.width.tested)
+
+#sum over location
+dat_all %>%
+  mutate(class = case_when(
+    true_positive == 1 ~ "True positive",
+    false_positive == 1 ~ "False positive",
+    true_negative == 1 ~ "True negative",
+    false_negative == 1 ~ "False negative"
+  ),
+  Region ="Southeast Alaska") %>%
+  count(Region, class, coxa.width.tested) %>%
+  group_by(Region, coxa.width.tested) %>%
+  mutate(prop = n / sum(n)) %>%
+  ggplot(aes(x = Region, y = prop, fill = class)) +
+  geom_col(position = "stack") +
+  scale_fill_manual(values = c(
+    "True positive" = "#009E73",
+    "True negative" = "#56B4E9",
+    "False positive" = "#E69F00",
+    "False negative" = "#D55E00"
+  )) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    title = "Agreement and Error Types by Location",
+    y = "Percent of observations",
+    x = "",
+    fill = ""
+  ) +
+  theme_minimal(base_size = 14)+
+  facet_wrap(~ coxa.width.tested)
+
