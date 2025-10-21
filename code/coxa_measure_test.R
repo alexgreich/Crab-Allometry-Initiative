@@ -198,9 +198,9 @@ ggsave("figures/fig_one.png", fig_one, width =10, height = 6, dpi = 300)
 #Neat, that should be good enough in the data viz department. Now let's get some stats.
 dat_sum <- dat_all %>%
   mutate(class = case_when(
-    true_positive == 1 ~ "True positive",
+    true_positive == 1 ~ "True positive (sensitivity)",
     false_positive == 1 ~ "False positive",
-    true_negative == 1 ~ "True negative",
+    true_negative == 1 ~ "True negative (specificity)",
     false_negative == 1 ~ "False negative"
   ),
   Region ="") %>%
@@ -221,3 +221,17 @@ write.csv(temp2, "results/coxa test 32.csv")
 temp3 <- dat_sum %>% filter(coxa.width.tested == 33)  %>% select(-Region)
 write.csv(temp3, "results/coxa test 33.csv")
 
+
+#test??
+#sensitivity and specificity
+library(broom)
+
+results <- dat_all %>%
+  summarise(
+    sens_31 = mean(Coxa.test31[Stick.legal == 1]), # true positive rate
+    spec_31 = mean(1 - Coxa.test31[Stick.legal == 0]),
+    sens_32 = mean(Coxa.test32[Stick.legal == 1]),
+    spec_32 = mean(1 - Coxa.test32[Stick.legal == 0]),
+    sens_33 = mean(Coxa.test33[Stick.legal == 1]),
+    spec_33 = mean(1 - Coxa.test33[Stick.legal == 0])
+  )
