@@ -14,13 +14,13 @@ rkc.males[, 'Species'] <- as.factor(rkc.males[, 'Species'])
 rkc.males[, 'Number'] <- as.factor(rkc.males[, 'Number'])
 
 rkc.males.cor <- cor(rkc.males[, unlist(lapply(rkc.males, is.numeric))], use = "complete.obs")
-View(rkc.males.cor)
+#View(rkc.males.cor)
 
 res <- melt(rkc.males.cor)
 res$type=apply(res,1,function(x) 
   paste(sort(c(as.character(x[1]),as.character(x[2]))),collapse="*"))  
 res=unique(res[,c("type","value")])  
-View(res)
+#View(res)
 
 #chart.Correlation(rkc.males.cor, histogram = TRUE, method = "pearson")
 
@@ -94,7 +94,7 @@ summary(model)
 model <- lm(rkc.males$Left.Coxa.3rd ~ rkc.males$Carapace.width.including.spines..mm.)
 summary(model)
 
-#agr here- females not working for me
+
 rkc.females <- subset(rkc, Sex == "F")
 #rkc.females.cor <- cor(rkc.females[, unlist(lapply(rkc.males, is.numeric))], na.rm = FALSE)
 rkc.females.cor <- cor(rkc.females[, unlist(lapply(rkc.males, is.numeric))])
@@ -419,10 +419,15 @@ mod3 <- glm(legal_bin ~ max_coxa, data = males_2, family = binomial)
 summary(mod3)
 
 #predicted probability for binomial model
-newdat <- data.frame(max_coxa = c(28,29, 30, 31, 32, 33))
-predict(mod3, newdata = newdat, type = "response")
+newdat <- data.frame(max_coxa = c(28, 29, 30, 31, 32, 33))
+rate_predicted <- predict(mod3, newdata = newdat, type = "response")
 #so 31 has a 10% prob of being legal...
 #32 has a 24% prob of being legal? How is that??
+#make that a table
+max_coxa = c(28, 29, 30, 31, 32, 33)
+binom_df<-data.frame(max_coxa, rate_predicted)
+write.csv(binom_df, "results/binom_df.csv")
+
 
 
 #CI's
@@ -455,9 +460,9 @@ data.frame(max_coxa = 33, fit, lwr, upr) #.46
 
 
 #plot binomial
-ggplot(males_2, aes(x = max_coxa, y = legal_bin)) +
+(ggplot(males_2, aes(x = max_coxa, y = legal_bin)) +
   geom_point(alpha = 0.5) +
-  stat_smooth(method = "glm", method.args = list(family = "binomial"), se = TRUE) -> binom_plot
+  stat_smooth(method = "glm", method.args = list(family = "binomial"), se = TRUE) -> binom_plot)
 ggsave("figures/binomial plot.png", binom_plot, width =10, height = 6, dpi = 300)
 
 
@@ -466,22 +471,12 @@ dim(males_2 %>% filter(max_coxa == 31)) #40 obs
 dim(males_2 %>% filter(max_coxa == 32)) #43 obs
 
 
-###oh wait wait wait
-#chris measured 2nd right coxa, then took the max if the 2nd right coxa was < the threshold.
-#is that the same as here tho?
-##would have to calcualte for 31 for example. Would legal/not legal be the same?
+#chat gpt attempt
+thresholds <- 28:33  # the coxa thresholds you care about
 
-#prob
-p_est <- males_2 %>%
-  filter(max_coxa < 31) %>%
-  mutate(pred = predict(mod3, newdata = ., type = "response")) %>%
-  summarise(prob_legal = mean(pred))
 
-#wft tk?
-newdat <- data.frame(max_coxa = seq(min(na.omit(males_2$max_coxa)), 31, length.out = 824))
-newdat$pred <- predict(model, newdata = newdat, type = "response")
 
-mean(newdat$pred) 
 
-#what I need to do - prob of legality when crab < 31- some integration thing
+
+
 
