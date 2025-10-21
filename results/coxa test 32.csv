@@ -1,0 +1,5 @@
+"","class","coxa.width.tested","n","prop"
+"1","False negative","32",45,0.227272727272727
+"2","False positive","32",3,0.0151515151515152
+"3","True negative (specificity)","32",62,0.313131313131313
+"4","True positive (sensitivity)","32",88,0.444444444444444
