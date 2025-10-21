@@ -43,7 +43,7 @@ Other analysis option - Receiver Operating Characteristic (ROC) curve- not yet e
 A coxa test width of 31mm was the most conservative test width, getting right 64.2% of measured crab, with no false positives (false positive here indicating an actually legal crab that the coxa identifies as sublegal; Figure 1, Table 1). Coxa test width 32mm had one false positive and correctly identified legal size or lack thereof in 75.5% of the crab (Figure 2, Table 2). Coxa test width of 33mm was the most accurate at 85.6% correct identification of legal crab, but 10.3% of the missed calls were false positives, the least desirable missed call (when the crab is actually legal but the coxa width informs that it is not; Figure 3, Table 3). So choosing a threshold of 31mm would be on the conservative size, calling some crab legal that are too small, but not erroneously punishing anyone who harvested a legal size crab. Choosing a threshold of 32mm would be a more accurate threshold, with a small but notable risk of false positives (1.52% false positive rate with 32mm threshold in this study). I'd advise against 33mm as the coxa width test measurement; a false positive rate of 10% is too high. Either 31mm or 32mm could be feasible, but I think we'll want more test measurement data.
 
 ## Binomial analysis - from the 2017 and June 2025 data collection events
-This analysis implies that we need to be more conservative. From this analysis, coxa width thresholds (threshold # or higher is a legal crab) of 31, 32, and 33 have rates of 0.039, 0.104, and 0.241 chance of being attached to a legal size crab, respectively. Coxa width thresholds of 29 and 30 look better, with respective rates of legality of 0.039 and 0.015. The binomial analysis indicates that we want a lower coxa threshold in order to avoid false positives (it was a legal crab and the trooper erroneously cites the fisherman based on the coxa width). Note that I did use the maximum coxa size for this analysis, so if there's a better angle to look at this data from please let me know.
+This analysis implies that we need to be more conservative. From this analysis, coxa widths of less than 31, 32, and 33 have rates of 0.039, 0.104, and 0.241 chance of being attached to a legal size crab, respectively (Figure 4; Table 4). Coxa width thresholds of 29 and 30 look better, with respective rates of legality of 0.005 and 0.015. The binomial analysis indicates that we want a lower coxa threshold in order to avoid false positives (it was a legal crab and the trooper erroneously cites the fisherman based on the coxa width). Note that I did use the maximum coxa size for this analysis, so if there's a better angle to look at this data from please let me know.
 
 
 
@@ -70,9 +70,13 @@ kable(d, caption = "Test coxa measurement of 33mm")
 ```
 
 
+```{r Table 4}
+
+```
+
+
 # Figures
 
-You can also embed plots, for example:
 
 ```{r fig1}
 
@@ -82,6 +86,12 @@ knitr::include_graphics("../figures/fig_one.png")
 
 ```{r fig2}
 knitr::include_graphics("../figures/fig_two.png")
+
+```
+```{r fig3}
+knitr::include_graphics("../figures/binomial plot.png")
+```
+```{r fig4}
 
 ```
 

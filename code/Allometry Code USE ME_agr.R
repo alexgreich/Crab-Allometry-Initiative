@@ -419,7 +419,7 @@ mod3 <- glm(legal_bin ~ max_coxa, data = males_2, family = binomial)
 summary(mod3)
 
 #predicted probability for binomial model
-newdat <- data.frame(max_coxa = c(29, 30, 31, 32, 33))
+newdat <- data.frame(max_coxa = c(28,29, 30, 31, 32, 33))
 predict(mod3, newdata = newdat, type = "response")
 #so 31 has a 10% prob of being legal...
 #32 has a 24% prob of being legal? How is that??
@@ -457,7 +457,8 @@ data.frame(max_coxa = 33, fit, lwr, upr) #.46
 #plot binomial
 ggplot(males_2, aes(x = max_coxa, y = legal_bin)) +
   geom_point(alpha = 0.5) +
-  stat_smooth(method = "glm", method.args = list(family = "binomial"), se = TRUE)
+  stat_smooth(method = "glm", method.args = list(family = "binomial"), se = TRUE) -> binom_plot
+ggsave("figures/binomial plot.png", binom_plot, width =10, height = 6, dpi = 300)
 
 
 #how many obs are at 31 and 32?
@@ -470,4 +471,17 @@ dim(males_2 %>% filter(max_coxa == 32)) #43 obs
 #is that the same as here tho?
 ##would have to calcualte for 31 for example. Would legal/not legal be the same?
 
+#prob
+p_est <- males_2 %>%
+  filter(max_coxa < 31) %>%
+  mutate(pred = predict(mod3, newdata = ., type = "response")) %>%
+  summarise(prob_legal = mean(pred))
+
+#wft tk?
+newdat <- data.frame(max_coxa = seq(min(na.omit(males_2$max_coxa)), 31, length.out = 824))
+newdat$pred <- predict(model, newdata = newdat, type = "response")
+
+mean(newdat$pred) 
+
+#what I need to do - prob of legality when crab < 31- some integration thing
 
