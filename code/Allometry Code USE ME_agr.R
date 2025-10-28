@@ -324,6 +324,31 @@ r1 <- #males %>% filter(Sex == "M" & is.na(Coxa.walking.leg.1.RIGHT) == FALSE) %
 prop.table(table(males$Coxa.walking.leg.1.RIGHT))
 
 
+#another Alex manipulation
+#which is the largest coxa??
+names(males)
+mean(na.omit(males$Coxa.walking.leg.1.RIGHT))
+mean(na.omit(males$Coxa.walking.leg.2.RIGHT))
+mean(na.omit(males$Coxa.walking.leg.3.RIGHT))
+mean(na.omit(males$Coxa.walking.leg.1.LEFT))
+mean(na.omit(males$Coxa.walking.leg.2.LEFT))
+mean(na.omit(males$Coxa.walking.leg.3.LEFT))
+
+median(na.omit(males$Coxa.walking.leg.1.RIGHT))
+median(na.omit(males$Coxa.walking.leg.2.RIGHT))
+median(na.omit(males$Coxa.walking.leg.3.RIGHT))
+median(na.omit(males$Coxa.walking.leg.1.LEFT))
+median(na.omit(males$Coxa.walking.leg.2.LEFT))
+median(na.omit(males$Coxa.walking.leg.3.LEFT))
+
+#second two legs. WL 2 works fine. WL 3 doesnt look bigger. It is more tightly correlated to CW, slightly
+
+ggplot(males) + aes() + #AGR WIP
+  geom_point(aes(x=Coxa.walking.leg.2.RIGHT, y= Carapace.width), color = "purple", alpha = 0.3) + #I see more variation in purple
+  geom_smooth(aes(x=Coxa.walking.leg.2.RIGHT, y= Carapace.width), color = "purple", method = "lm")+
+  geom_point(aes(x=Coxa.walking.leg.3.RIGHT, y= Carapace.width), color = "orange", alpha = 0.2)+
+  geom_smooth(aes(x=Coxa.walking.leg.3.RIGHT, y= Carapace.width), color = "orange", method = "lm")
+
 #Alex manipulations
 ##so coxa at 31 or 32
 # - less than 31 or 32 being sublegal
@@ -471,7 +496,7 @@ dim(males_2 %>% filter(max_coxa == 31)) #40 obs
 dim(males_2 %>% filter(max_coxa == 32)) #43 obs
 
 
-#chat gpt attempt
+#half baked attempt
 thresholds <- 28:33  # the coxa thresholds you care about
 
 
