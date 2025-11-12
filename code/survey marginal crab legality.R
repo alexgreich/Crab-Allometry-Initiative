@@ -172,4 +172,4 @@ table_survey <- newdat %>% select(Length.Millimeters, predicted_legality, lower,
   round(digits = 3)
 
 #save the table
-write.csv(table_survey, file = "Predicted RKC CL legality based on survey crab")
+write.csv(table_survey, file = "results/Predicted RKC CL legality based on survey crab.csv")
