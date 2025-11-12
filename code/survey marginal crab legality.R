@@ -33,8 +33,8 @@ df2 <- survey_data %>%
   filter(!is.na(Legal.Size.Code)) %>% #get rid of the NA's
   select(Year, Location, Density.Strata.Code, Recruit.Status, Length.Millimeters, Legal.Size.Code) %>% #just keep columns that I need
  # mutate(Legal.Size.Code = factor(Legal.Size.Code)) #%>% #that needs to be a factor
-  mutate(Legal.Size.Code = if_else(Legal.Size.Code == 2,0,1))%>% #0 for not legal and 1 for legal
-  mutate(Legal.Size.Code = factor(Legal.Size.Code))
+  mutate(Legal.Size.Code = if_else(Legal.Size.Code == 2,0,1))#%>% #0 for not legal and 1 for legal
+  #mutate(Legal.Size.Code = factor(Legal.Size.Code))
 #oof should year be a factor too?
 
 ##exploratory graphs
@@ -43,13 +43,13 @@ ggplot(df2) + aes(x=Length.Millimeters) + geom_density() +theme_cowplot()
 
 ggplot(df2) + aes(x=Length.Millimeters) + geom_density() +theme_cowplot() + facet_wrap(~Location)
 
-ggplot(df2) + aes(x=Length.Millimeters, color=Legal.Size.Code, fill = Legal.Size.Code) + geom_density(alpha=0.3) +theme_cowplot() #that makes sense
+ggplot(df2) + aes(x=Length.Millimeters, color=factor(Legal.Size.Code), fill = factor(Legal.Size.Code)) + geom_density(alpha=0.3) +theme_cowplot() #that makes sense
 # at 155mm CL almost all of the crab are legal.
 
 #does this change between years? between locations?
-ggplot(df2) + aes(x=Length.Millimeters, color=Legal.Size.Code, fill = Legal.Size.Code) + geom_density(alpha=0.3) +theme_cowplot() +facet_wrap(~Year)
+ggplot(df2) + aes(x=Length.Millimeters, color=factor(Legal.Size.Code), fill = factor(Legal.Size.Code)) + geom_density(alpha=0.3) +theme_cowplot() +facet_wrap(~Year)
 #yes changes by year, but I dont see any drastic patterns
-ggplot(df2) + aes(x=Length.Millimeters, color=Legal.Size.Code, fill = Legal.Size.Code) + geom_density(alpha=0.3) +theme_cowplot() +facet_wrap(~Location)
+ggplot(df2) + aes(x=Length.Millimeters, color=factor(Legal.Size.Code), fill = factor(Legal.Size.Code)) + geom_density(alpha=0.3) +theme_cowplot() +facet_wrap(~Location)
 #ok by location is a bit more interesting. Maybe I should include that in the model
 
 ################################################################
@@ -100,17 +100,76 @@ newdat <- expand.grid(
 newdat$pred <- predict(mod_b2, newdata = newdat, type = "response")
 
 #plot binomial
-(ggplot(males_2, aes(x = max_coxa, y = legal_bin)) +
+(ggplot(df2, aes(x = Length.Millimeters, y = Legal.Size.Code)) + #we can keep it simple I suppose
     geom_point(alpha = 0.5) +
-    stat_smooth(method = "glm", method.args = list(family = "binomial"), se = TRUE) -> binom_survey_plot)
-ggsave("figures/binomial plot.png", binom_survey_plot_2, width =10, height = 6, dpi = 300)
+   stat_smooth(method = "glm", method.args = list(family = "binomial"), se = TRUE) -> binom_survey_plot_2)
+ggsave("figures/binomial plot survey data.png", binom_survey_plot_2, width =10, height = 6, dpi = 300)
 
-ggplot(df2, aes(x = Length.Millimeters, y = as.numeric(Legal.Size.Code), color = Location)) +
+plot_3 <- ggplot(df2, aes(x = Length.Millimeters, y = Legal.Size.Code, color = Location)) + #by location
   geom_point(alpha = 0.3) +
   geom_line(data = newdat, aes(y = pred), size = 1) +
   theme_minimal() +
   labs(y = "Predicted probability of legal size",
-       x = "Length (mm)",
+       x = "Carapace length (mm)",
        color = "Location")
+ggsave("figures/binomial plot survey data area factor.png", plot_3, width =10, height = 6, dpi = 300)
 
+ggplot(df2, aes(x = Length.Millimeters, y = Legal.Size.Code)) + #grouped - does not look great
+  geom_point(alpha = 0.3) +
+  geom_line(data = newdat, aes(y = pred), size = 1) +
+  theme_minimal() +
+  labs(y = "Predicted probability of legal size",
+       x = "Carapace length (mm)")
+
+#pred grid for that final graph
+# sequence of lengths over your data range
+length_seq <- seq(min(df2$Length.Millimeters),
+                  max(df2$Length.Millimeters),
+                  length.out = 100)
+# all locations in your dataset
+#locs <- unique(df2$Location)
+# prediction grid
+newdat <- expand.grid(
+  Length.Millimeters = length_seq,
+  Location = locs
+)
+#predict
+newdat$pred <- predict(mod_b2, newdata = newdat, type = "response")
+#redo the last graph
+ggplot(df2, aes(x = Length.Millimeters, y = Legal.Size.Code)) + #grouped 
+  geom_point(alpha = 0.3) +
+  geom_line(data = newdat, aes(y = pred), size = 1) +
+  theme_minimal() +
+  labs(y = "Predicted probability of legal size",
+       x = "Carapace length (mm)") #still looks bad
+
+
+################################################
 #a table with rates of legality
+#I'll do it based on group data
+
+# create a dataframe for prediction
+newdat <- data.frame(Length.Millimeters = 138:155)
+
+# predict probability of being legal
+newdat$predicted_legality <- predict(mod_b, newdata = newdat, type = "response")
+
+#  add 95% confidence intervals
+pred <- predict(mod_b, newdata = newdat, type = "link", se.fit = TRUE)
+newdat <- newdat %>%
+  mutate(
+    fit_link = pred$fit,
+    se_link = pred$se.fit,
+    lower = plogis(fit_link - 1.96 * se_link),
+    upper = plogis(fit_link + 1.96 * se_link)
+  )
+
+# show the table
+newdat
+
+#manipulate the table
+table_survey <- newdat %>% select(Length.Millimeters, predicted_legality, lower, upper) %>%
+  round(digits = 3)
+
+#save the table
+write.csv(table_survey, file = "Predicted RKC CL legality based on survey crab")
