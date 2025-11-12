@@ -32,7 +32,9 @@ df2 <- survey_data %>%
   filter(Legal.Size.Code!=3) %>% #get rid of the unknowns
   filter(!is.na(Legal.Size.Code)) %>% #get rid of the NA's
   select(Year, Location, Density.Strata.Code, Recruit.Status, Length.Millimeters, Legal.Size.Code) %>% #just keep columns that I need
-  mutate(Legal.Size.Code = factor(Legal.Size.Code)) #that needs to be a factor
+ # mutate(Legal.Size.Code = factor(Legal.Size.Code)) #%>% #that needs to be a factor
+  mutate(Legal.Size.Code = if_else(Legal.Size.Code == 2,0,1))%>% #0 for not legal and 1 for legal
+  mutate(Legal.Size.Code = factor(Legal.Size.Code))
 #oof should year be a factor too?
 
 ##exploratory graphs
@@ -75,9 +77,40 @@ BIC(mod_b, mod_global, mod_global_int2, mod_b2, mod_b3) #I'm going with mod_b2
 #ok that goes poorly
 
 
-#anyway, I chose mod_b2 because based on the graphs, it makes sense that location impacts how freqeuently a crab at a given CL is legal
+#anyway, I chose mod_b2 because based on the graphs, it makes sense that location impacts how frequently a crab at a given CL is legal
+##I didnt see any trend with year.
+##and BIC selected mod_b2 as the best model (not AIC but AIC has some issues with overfitting)
 
 
 #graph the binomial model
+#crap, I need to make a prediction dataset to graph along that line
+#prediction grid
+# sequence of lengths over your data range
+length_seq <- seq(min(df2$Length.Millimeters),
+                  max(df2$Length.Millimeters),
+                  length.out = 100)
+# all locations in your dataset
+locs <- unique(df2$Location)
+# prediction grid
+newdat <- expand.grid(
+  Length.Millimeters = length_seq,
+  Location = locs
+)
+#predict
+newdat$pred <- predict(mod_b2, newdata = newdat, type = "response")
+
+#plot binomial
+(ggplot(males_2, aes(x = max_coxa, y = legal_bin)) +
+    geom_point(alpha = 0.5) +
+    stat_smooth(method = "glm", method.args = list(family = "binomial"), se = TRUE) -> binom_survey_plot)
+ggsave("figures/binomial plot.png", binom_survey_plot_2, width =10, height = 6, dpi = 300)
+
+ggplot(df2, aes(x = Length.Millimeters, y = as.numeric(Legal.Size.Code), color = Location)) +
+  geom_point(alpha = 0.3) +
+  geom_line(data = newdat, aes(y = pred), size = 1) +
+  theme_minimal() +
+  labs(y = "Predicted probability of legal size",
+       x = "Length (mm)",
+       color = "Location")
 
 #a table with rates of legality
