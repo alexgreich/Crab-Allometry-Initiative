@@ -57,6 +57,15 @@ ggplot(dat2) + aes(y= Carapace.length..mm., x= factor(Legal...31mm)) + geom_poin
   geom_hline(yintercept = 138, color = "red", linetype = "dashed")+ #not a hard line here...
   geom_hline(yintercept = 145, color = "red", linetype = "dashed")
 
+#theme adfg test- an aside
+library(adfggraph)
+library(extrafont)
+#font_import()
+loadfonts(device = "win")
+ggplot(dat2) + aes(y= Carapace.length..mm., x= factor(Legal...31mm)) + geom_point(aes(color=Stick.legal)) + 
+  geom_hline(yintercept = 138, color = "red", linetype = "dashed")+ #not a hard line here...
+  geom_hline(yintercept = 145, color = "red", linetype = "dashed") + theme_adfg()
+
 #initial what I'm seeing from here: 32 has one strike (in dat 2). 31 might be better
 ##what we don't want is false postives. We don't want coxa to say "this aint legal (2)" if it IS legal.
 ##that happens in dat 2, 33mm 4 times and dat 2, 32 mm, 1 time. 31mm had no false positives so far.
