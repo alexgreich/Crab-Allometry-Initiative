@@ -6,7 +6,8 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+library(flextable)
+library(dplyr)
 ```
 
 # Summary
@@ -25,10 +26,36 @@ We *could* talk about 31mm and 32mm objectively, or we could pick 31mm and influ
 Potential conclusion statement: Coxa area highly correlated with carapace width and can be used to predict carapace width. In southeast Alaska, we found that a 31mm coxa threshold was best because.... OR 31mm and 32mm were listed as options with DRAWBACKS AND BENEFITS OF EACH. Coxa measurement is an additional tool for the wildlife troopers to use and the threshold can be selected by the Board of Fish.
 
 
+# Phase 1
 
+
+# Phase 2
+
+
+# Phase 3
+
+
+# Phase 4
+
+Table P4. Legality of red king crab at a given carapace length, summarized from the the southeast red king crab survey over all years (1978-2025).
 ```{r cars}
-summary(cars)
+tab_p4 <- read.csv("../results/Predicted RKC CL legality based on survey crab.csv")%>%
+  rename("Carapace length (mm)" = "Length.Millimeters", "Legal rate" = "predicted_legality", 
+         "Legal rate lower CI" = "lower", "Legal rate upper CI" = "upper" ) %>%
+  select(-X)
+
+ft <- flextable(tab_p4) #%>% 
+  #colformat_double(
+  #     digits = 0,
+  #     na_str = "na") %>%
+  #merge_v(j = "Year", target = "Year") %>%
+  #valign(j = 1, valign = "top", part = "all") %>%
+  #fontsize(size = 8)
+
+set_table_properties(ft, layout = "autofit")
 ```
+
+
 
 ## Including Plots
 
