@@ -1,0 +1,41 @@
+---
+title: "RKC allometry analysis roundup"
+author: "Alex Reich"
+date: "2025-11-25"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Summary
+
+This document is an informal summary of the analyses that were done for the SE RKC allometry project in preparation for the upcoming scientific paper and posters. The way I see it, there are 4 phases of this analysis. And I'm calling them "phases" here, but I anticipate we won't refer to them this way in the paper.
+
+ - Phase 1: The correlation analysis and writeup that Spencer did.
+ - Phase 2: The at-sea test measurements (see Coxa-test-discussion rmd (on github) and html (in a past email) for more details). I'll need to re-run this analysis to limit the crab sizes (138mm-155mm carapace length) and make the graph changes that Chris recommended in email.
+ - Phase 3: The port sampling test measurements -  opportunistic sampling of smaller (below 155 but typically over 140) crab from the commercial fishery, all of which were pre-selected to be legal size.
+ - Phase 4: Alex fit a binomial model to ALL SE RKC survey data crab with carapace lengths 138-155 in order to determine what percentage of crab are legal at a given carapace length. (In a previous email but I will include here as well.) This produced a graph and a table of results. This phase is not part of the main analysis, and can either be mentioned in the discussion or discussed in the supplementary materials. Or if you find a place where it flows in the main results section, Spencer, go for it.
+ 
+The next draft of the scientific paper should emphasize phase 1 and 2. The main outcome of phase 3 is "we tested 31mm and 32mm crab while port sampling and 32mm produces some false positives." The sampling of phase was not super thorough (a better way would be to get out on the Medeia again and measure more crab 138mm-155mm), but it does prove a point that the 32mm coxa threshold risks positives. Phase 4 will be metioned in the discussion, and the phase 4 table provided. The conclusion should state that we recommend* 31mm as the coxa threshold in regulation. An asterisk on recommend because I'm not sure how strongly to recommmend. Are we confident that this is THE threshold in the southeast? Perhaps we should say we're looking at 31mm as a threshold but want more data? From this area? From other areas?
+
+We *could* talk about 31mm and 32mm objectively, or we could pick 31mm and influence policy that way.
+
+Potential conclusion statement: Coxa area highly correlated with carapace width and can be used to predict carapace width. In southeast Alaska, we found that a 31mm coxa threshold was best because.... OR 31mm and 32mm were listed as options with DRAWBACKS AND BENEFITS OF EACH. Coxa measurement is an additional tool for the wildlife troopers to use and the threshold can be selected by the Board of Fish.
+
+
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
