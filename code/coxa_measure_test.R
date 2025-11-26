@@ -8,6 +8,13 @@ library(tidyverse)
 dat1 <- read.csv("data/trooper test data/enforcement test data.csv")
 #View(dat1)
 names(dat1) #looks fine
+unique(dat1$Carapace.width) #should I select for a range of crab? 178 is legal
+range(na.omit(dat1$Carapace.width))
+##what does a CL of 138 to 155 correspond to in CW? TK filter for that!!
+##this actually looks fine -  154 to 198 in length- looks like chris put thought into the measurement range
+##if anything we might want to make the lower end 160mm CW. - based on graph exploration of the June 25 and early (2017) survey data
+##yeah, I'm going to cut off below 160 in CW- or at least add code for it that can be turned off or on
+#dat1 <- dat1 %>% filter(Carapace.width > 159)
 
 
 #second data set collected July 2025 in Juneau area
@@ -16,6 +23,7 @@ dat2 <- read.csv("data/trooper test data/Legal_coxa_testing.csv")
 ##it's non essential info but Chris was totes like "I'll fix it!" and then forgot
 names(dat2)
 #View(dat2)
+unique(dat2$Carapace.length..mm.) #oh, these were targeted small crab. nice. 
 
 
 #well, these datasets are set up differently
@@ -144,10 +152,10 @@ dat_all$coxa.width.tested <- as.factor(dat_all$coxa.width.tested)
 library(cowplot)
 dat_all %>%
   mutate(class = case_when(
-    true_positive == 1 ~ "True positive",
-    false_positive == 1 ~ "False positive",
-    true_negative == 1 ~ "True negative",
-    false_negative == 1 ~ "False negative"
+    true_positive == 1 ~ "Harvested illegally, got a ticket (GOOD)", #true positive
+    false_positive == 1 ~ "Harvested legally, got a ticket (BAD)", #false positive
+    true_negative == 1 ~ "Harvested legally, did not get a ticket (GOOD)", #true negatice
+    false_negative == 1 ~ "Harvested illegally, did not get a ticket (BAD)" #false negative
   )) %>%
   count(Location, class, coxa.width.tested) %>%
   group_by(Location, coxa.width.tested) %>%
@@ -155,10 +163,10 @@ dat_all %>%
   ggplot(aes(x = Location, y = prop, fill = class)) +
   geom_col(position = "stack") +
   scale_fill_manual(values = c(
-    "True positive" = "#009E73",
-    "True negative" = "#56B4E9",
-    "False positive" = "#E69F00",
-    "False negative" = "#D55E00"
+    "Harvested illegally, got a ticket (GOOD)" = "#009E73", #true posisitve
+    "Harvested legally, did not get a ticket (GOOD)" = "#56B4E9", # true negative
+    "Harvested legally, got a ticket (BAD)" = "#E69F00", #false positive
+    "Harvested illegally, did not get a ticket (BAD)" = "#D55E00" #false negative
   )) +
   scale_y_continuous(labels = scales::percent) +
   labs(
@@ -175,10 +183,10 @@ ggsave("figures/fig_two.png", fig_two, width =10, height = 6, dpi = 300)
 #sum over location
 dat_all %>%
   mutate(class = case_when(
-    true_positive == 1 ~ "True positive",
-    false_positive == 1 ~ "False positive",
-    true_negative == 1 ~ "True negative",
-    false_negative == 1 ~ "False negative"
+    true_positive == 1 ~ "Harvested illegally, got a ticket (GOOD)", #true positive
+    false_positive == 1 ~ "Harvested legally, got a ticket (BAD)", #false positive
+    true_negative == 1 ~ "Harvested legally, did not get a ticket (GOOD)", #true negatice
+    false_negative == 1 ~ "Harvested illegally, did not get a ticket (BAD)" #false negative
   ),
   Region ="") %>%
   count(Region, class, coxa.width.tested) %>%
@@ -187,10 +195,10 @@ dat_all %>%
   ggplot(aes(x = coxa.width.tested, y = prop, fill = class)) +
   geom_col(position = "stack") +
   scale_fill_manual(values = c(
-    "True positive" = "#009E73",
-    "True negative" = "#56B4E9",
-    "False positive" = "#E69F00",
-    "False negative" = "#D55E00"
+    "Harvested illegally, got a ticket (GOOD)" = "#009E73", #true posisitve
+    "Harvested legally, did not get a ticket (GOOD)" = "#56B4E9", # true negative
+    "Harvested legally, got a ticket (BAD)" = "#E69F00", #false positive
+    "Harvested illegally, did not get a ticket (BAD)" = "#D55E00" #false negative
   )) +
   scale_y_continuous(labels = scales::percent) +
   labs(
