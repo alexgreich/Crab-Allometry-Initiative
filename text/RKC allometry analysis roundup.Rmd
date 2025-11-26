@@ -8,6 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 library(flextable)
 library(dplyr)
+library(kableExtra)
 ```
 
 # Summary
@@ -27,10 +28,60 @@ Potential conclusion statement: Coxa area highly correlated with carapace width 
 
 
 # Phase 1
+See Spencer's draft write up. It needs figures, and probably could be shorter (but wonderfully written and all the needed results are already there).
+Take away message: coxa width and carapace width (and carapace length, for that matter) are tightly correlated. Coxa width can be used as a proxy for carapace width.
 
 
 # Phase 2
+## Unfiltered
+```{r}
+knitr::include_graphics("../figures/fig_one_unfiltered.png")
+```
+```{r Table 1}
+d <- read.csv("../results/coxa test 31 UNFILTERED.csv")
 
+kable(d, caption = "Test coxa measurement of 31mm")
+```
+
+```{r Table 2}
+d <- read.csv("../results/coxa test 32 UNFILTERED.csv")
+
+kable(d, caption = "Test coxa measurement of 32mm")
+```
+
+
+```{r Table 3}
+d <- read.csv("../results/coxa test 33 UNFILTERED.csv")
+
+kable(d, caption = "Test coxa measurement of 33mm")
+```
+
+## Filtered
+```{r}
+knitr::include_graphics("../figures/fig_one_filtered.png")
+```
+
+```{r Table 1}
+d <- read.csv("../results/coxa test 31 FILTERED.csv")
+
+kable(d, caption = "Test coxa measurement of 31mm")
+```
+
+```{r Table 2}
+d <- read.csv("../results/coxa test 32 FILTERED.csv")
+
+kable(d, caption = "Test coxa measurement of 32mm")
+```
+
+
+```{r Table 3}
+d <- read.csv("../results/coxa test 33 FILTERED.csv")
+
+kable(d, caption = "Test coxa measurement of 33mm")
+```
+
+
+##
 
 # Phase 3
 

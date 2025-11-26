@@ -14,7 +14,9 @@ range(na.omit(dat1$Carapace.width))
 ##this actually looks fine -  154 to 198 in length- looks like chris put thought into the measurement range
 ##if anything we might want to make the lower end 160mm CW. - based on graph exploration of the June 25 and early (2017) survey data
 ##yeah, I'm going to cut off below 160 in CW- or at least add code for it that can be turned off or on
-#dat1 <- dat1 %>% filter(Carapace.width > 159)
+
+#FILTER OUT SMALL CRAB OPTION BELOW - TURN OFF OR ON
+dat1 <- dat1 %>% filter(Carapace.width > 159) #optional filtered - turn on or off to get rid of the non-marginal too-small crab
 
 
 #second data set collected July 2025 in Juneau area
@@ -186,7 +188,8 @@ dat_all %>%
   theme_minimal(base_size = 14)+
   facet_wrap(~ coxa.width.tested) -> fig_two
 
-ggsave("figures/fig_two_unfiltered.png", fig_two, width =10, height = 6, dpi = 300)
+#ggsave("figures/fig_two_unfiltered.png", fig_two, width =10, height = 6, dpi = 300)
+ggsave("figures/fig_two_filtered.png", fig_two, width =10, height = 6, dpi = 300)
 
 #sum over location
 dat_all %>%
@@ -225,7 +228,8 @@ dat_all %>%
   ) +
   theme_minimal(base_size = 14) -> fig_one
 
-ggsave("figures/fig_one_unfiltered.png", fig_one, width =10, height = 6, dpi = 300)
+#ggsave("figures/fig_one_unfiltered.png", fig_one, width =10, height = 6, dpi = 300)
+ggsave("figures/fig_one_filtered.png", fig_one, width =10, height = 6, dpi = 300)
 
 ######
 #Neat, that should be good enough in the data viz department. Now let's get some stats.
@@ -243,28 +247,79 @@ dat_sum <- dat_all %>%
   ungroup()
 
 #hmm. let's make some tables
+interp_table = data.frame(class =c(
+  "False positive",
+  "False negative",
+  "True positive (sensitivity)",
+  "True negative (specificity)"
+),
+  Interpretation = c(
+    "Harvested legally, got a ticket (VERY BAD)",
+    "Harvested illegally, did not get a ticket (BAD)",
+    "Harvested illegally, got a ticket (GOOD)",
+    "Harvested legally, did not get a ticket (GOOD)"
+    
+  )
+)
 
 #Table 1: what proportion of 31mm, 32mm, and 33mm are correct
 temp1 <- dat_sum %>% filter(coxa.width.tested == 31) %>% select(-Region)
-write.csv(temp1, "results/coxa test 31.csv")
+temp1.1 <- data.frame(class= "False positive", coxa.width.tested = 31, n=0, prop = 0.000)
+temp1.2 <- rbind(temp1, temp1.1) %>%
+  mutate(
+    class = factor(class, levels = c(
+      "False positive",
+      "False negative",
+      "True positive (sensitivity)",
+      "True negative (specificity)"
+    ))
+  ) %>%
+  arrange(class) %>%
+  left_join(interp_table)
 
-temp2 <- dat_sum %>% filter(coxa.width.tested == 32)  %>% select(-Region)
-write.csv(temp2, "results/coxa test 32.csv")
+write.csv(temp1.2, "results/coxa test 31 FILTERED.csv")
+#write.csv(temp1.2, "results/coxa test 31 UNFILTERED.csv")
 
-temp3 <- dat_sum %>% filter(coxa.width.tested == 33)  %>% select(-Region)
-write.csv(temp3, "results/coxa test 33.csv")
+temp2 <- dat_sum %>% filter(coxa.width.tested == 32)  %>% select(-Region) %>%
+  mutate(
+    class = factor(class, levels = c(
+      "False positive",
+      "False negative",
+      "True positive (sensitivity)",
+      "True negative (specificity)"
+    ))
+  ) %>% arrange(class) %>%
+  left_join(interp_table)
+
+write.csv(temp2, "results/coxa test 32 FILTERED.csv")
+#write.csv(temp2, "results/coxa test 32 UNFILTERED.csv")
+
+temp3 <- dat_sum %>% filter(coxa.width.tested == 33)  %>% select(-Region) %>%
+  mutate(
+    class = factor(class, levels = c(
+      "False positive",
+      "False negative",
+      "True positive (sensitivity)",
+      "True negative (specificity)"
+    ))
+  ) %>% arrange(class) %>%
+  left_join(interp_table)
+  
+write.csv(temp3, "results/coxa test 33 FILTERED.csv")
+#write.csv(temp3, "results/coxa test 33 UNFILTERED.csv")
 
 
+#IDK below, but it's broken
 #test??
 #sensitivity and specificity
-library(broom)
+#library(broom)
 
-results <- dat_all %>%
-  summarise(
-    sens_31 = mean(Coxa.test31[Stick.legal == 1]), # true positive rate
-    spec_31 = mean(1 - Coxa.test31[Stick.legal == 0]),
-    sens_32 = mean(Coxa.test32[Stick.legal == 1]),
-    spec_32 = mean(1 - Coxa.test32[Stick.legal == 0]),
-    sens_33 = mean(Coxa.test33[Stick.legal == 1]),
-    spec_33 = mean(1 - Coxa.test33[Stick.legal == 0])
-  )
+#results <- dat_all %>%
+#  summarise(
+#    sens_31 = mean(Coxa.test31[Stick.legal == 1]), # true positive rate
+#    spec_31 = mean(1 - Coxa.test31[Stick.legal == 0]),
+#    sens_32 = mean(Coxa.test32[Stick.legal == 1]),
+#    spec_32 = mean(1 - Coxa.test32[Stick.legal == 0]),
+#    sens_33 = mean(Coxa.test33[Stick.legal == 1]),
+#    spec_33 = mean(1 - Coxa.test33[Stick.legal == 0])
+#  )
