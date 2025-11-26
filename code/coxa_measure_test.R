@@ -153,10 +153,18 @@ library(cowplot)
 dat_all %>%
   mutate(class = case_when(
     true_positive == 1 ~ "Harvested illegally, got a ticket (GOOD)", #true positive
-    false_positive == 1 ~ "Harvested legally, got a ticket (BAD)", #false positive
+    false_positive == 1 ~ "Harvested legally, got a ticket (VERY BAD)", #false positive
     true_negative == 1 ~ "Harvested legally, did not get a ticket (GOOD)", #true negatice
     false_negative == 1 ~ "Harvested illegally, did not get a ticket (BAD)" #false negative
-  )) %>%
+  ),
+  # set factor levels in the order you want them stacked (bottom → top)
+  class = factor(class, levels = c(
+    "Harvested legally, got a ticket (VERY BAD)",   # VERY BAD goes on top
+    "Harvested illegally, did not get a ticket (BAD)",
+    "Harvested illegally, got a ticket (GOOD)",
+    "Harvested legally, did not get a ticket (GOOD)"
+  ))
+  ) %>%
   count(Location, class, coxa.width.tested) %>%
   group_by(Location, coxa.width.tested) %>%
   mutate(prop = n / sum(n)) %>%
@@ -165,8 +173,8 @@ dat_all %>%
   scale_fill_manual(values = c(
     "Harvested illegally, got a ticket (GOOD)" = "#009E73", #true posisitve
     "Harvested legally, did not get a ticket (GOOD)" = "#56B4E9", # true negative
-    "Harvested legally, got a ticket (BAD)" = "#E69F00", #false positive
-    "Harvested illegally, did not get a ticket (BAD)" = "#D55E00" #false negative
+    "Harvested legally, got a ticket (VERY BAD)" = "#D55E00", #false positive
+    "Harvested illegally, did not get a ticket (BAD)" = "#E69F00" #false negative
   )) +
   scale_y_continuous(labels = scales::percent) +
   labs(
@@ -178,17 +186,25 @@ dat_all %>%
   theme_minimal(base_size = 14)+
   facet_wrap(~ coxa.width.tested) -> fig_two
 
-ggsave("figures/fig_two.png", fig_two, width =10, height = 6, dpi = 300)
+ggsave("figures/fig_two_unfiltered.png", fig_two, width =10, height = 6, dpi = 300)
 
 #sum over location
 dat_all %>%
   mutate(class = case_when(
     true_positive == 1 ~ "Harvested illegally, got a ticket (GOOD)", #true positive
-    false_positive == 1 ~ "Harvested legally, got a ticket (BAD)", #false positive
+    false_positive == 1 ~ "Harvested legally, got a ticket (VERY BAD)", #false positive
     true_negative == 1 ~ "Harvested legally, did not get a ticket (GOOD)", #true negatice
     false_negative == 1 ~ "Harvested illegally, did not get a ticket (BAD)" #false negative
   ),
-  Region ="") %>%
+  Region ="",
+  # set factor levels in the order you want them stacked (bottom → top)
+  class = factor(class, levels = c(
+    "Harvested legally, got a ticket (VERY BAD)",   # VERY BAD goes on top
+    "Harvested illegally, did not get a ticket (BAD)",
+    "Harvested illegally, got a ticket (GOOD)",
+    "Harvested legally, did not get a ticket (GOOD)"
+  ))
+  ) %>%
   count(Region, class, coxa.width.tested) %>%
   group_by(Region, coxa.width.tested) %>%
   mutate(prop = n / sum(n)) %>%
@@ -197,8 +213,8 @@ dat_all %>%
   scale_fill_manual(values = c(
     "Harvested illegally, got a ticket (GOOD)" = "#009E73", #true posisitve
     "Harvested legally, did not get a ticket (GOOD)" = "#56B4E9", # true negative
-    "Harvested legally, got a ticket (BAD)" = "#E69F00", #false positive
-    "Harvested illegally, did not get a ticket (BAD)" = "#D55E00" #false negative
+    "Harvested legally, got a ticket (VERY BAD)" = "#D55E00", #false positive
+    "Harvested illegally, did not get a ticket (BAD)" = "#D69F00" #false negative
   )) +
   scale_y_continuous(labels = scales::percent) +
   labs(
@@ -209,7 +225,7 @@ dat_all %>%
   ) +
   theme_minimal(base_size = 14) -> fig_one
 
-ggsave("figures/fig_one.png", fig_one, width =10, height = 6, dpi = 300)
+ggsave("figures/fig_one_unfiltered.png", fig_one, width =10, height = 6, dpi = 300)
 
 ######
 #Neat, that should be good enough in the data viz department. Now let's get some stats.
