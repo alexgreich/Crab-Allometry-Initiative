@@ -31,50 +31,58 @@ Potential conclusion statement: Coxa area highly correlated with carapace width 
 See Spencer's draft write up. It needs figures, and probably could be shorter (but wonderfully written and all the needed results are already there).
 Take away message: coxa width and carapace width (and carapace length, for that matter) are tightly correlated. Coxa width can be used as a proxy for carapace width.
 
+Put correlation graphs and tests here.
+
 
 # Phase 2
 ## Unfiltered
-```{r}
+```{r, echo = FALSE}
 knitr::include_graphics("../figures/fig_one_unfiltered.png")
 ```
-```{r Table 1}
+
+
+```{r Table 1 un}
 d <- read.csv("../results/coxa test 31 UNFILTERED.csv")
 
 kable(d, caption = "Test coxa measurement of 31mm")
 ```
 
-```{r Table 2}
+
+```{r Table 2 un}
 d <- read.csv("../results/coxa test 32 UNFILTERED.csv")
 
 kable(d, caption = "Test coxa measurement of 32mm")
 ```
 
 
-```{r Table 3}
+```{r Table 3 un}
 d <- read.csv("../results/coxa test 33 UNFILTERED.csv")
 
 kable(d, caption = "Test coxa measurement of 33mm")
 ```
 
+
 ## Filtered
-```{r}
+For the "filter" I got rid of crab less than 160mm in carapace width. They were all true negatives.
+```{r, echo = FALSE}
 knitr::include_graphics("../figures/fig_one_filtered.png")
 ```
 
-```{r Table 1}
+```{r Table 1 f}
 d <- read.csv("../results/coxa test 31 FILTERED.csv")
 
 kable(d, caption = "Test coxa measurement of 31mm")
 ```
 
-```{r Table 2}
+
+```{r Table 2 f}
 d <- read.csv("../results/coxa test 32 FILTERED.csv")
 
 kable(d, caption = "Test coxa measurement of 32mm")
 ```
 
 
-```{r Table 3}
+```{r Table 3 f}
 d <- read.csv("../results/coxa test 33 FILTERED.csv")
 
 kable(d, caption = "Test coxa measurement of 33mm")
@@ -83,10 +91,10 @@ kable(d, caption = "Test coxa measurement of 33mm")
 
 ##
 
-# Phase 3
+# Phase 3 - Port sampling opportunistic coxa testing
 
 
-# Phase 4
+# Phase 4 - 
 
 Table P4. Legality of red king crab at a given carapace length, summarized from the the southeast red king crab survey over all years (1978-2025).
 ```{r cars}
@@ -108,12 +116,4 @@ set_table_properties(ft, layout = "autofit")
 
 
 
-## Including Plots
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
