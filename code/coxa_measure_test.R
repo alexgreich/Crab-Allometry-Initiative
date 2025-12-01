@@ -2,6 +2,10 @@
 #Alex Reich
 
 library(tidyverse)
+library(adfggraph) #may need to install from github
+#library(adfgcolors) #may need to install from github
+#devtools::install_github("jakelawlor/PNWColors") 
+library(PNWColors)
 
 
 ##first data set collected June 2025 in st. James Bay by Chris (and Trooper??)
@@ -192,17 +196,19 @@ dat_all %>%
 ggsave("figures/fig_two_filtered.png", fig_two, width =10, height = 6, dpi = 300)
 
 #sum over location
+names(pnw_palettes) #getting BAY colors
+
 dat_all %>%
   mutate(class = case_when(
     true_positive == 1 ~ "Harvested illegally, got a ticket (GOOD)", #true positive
-    false_positive == 1 ~ "Harvested legally, got a ticket (VERY BAD)", #false positive
+    false_positive == 1 ~ "Harvested legally, got a ticket (BAD)", #false positive
     true_negative == 1 ~ "Harvested legally, did not get a ticket (GOOD)", #true negatice
     false_negative == 1 ~ "Harvested illegally, did not get a ticket (BAD)" #false negative
   ),
   Region ="",
   # set factor levels in the order you want them stacked (bottom → top)
   class = factor(class, levels = c(
-    "Harvested legally, got a ticket (VERY BAD)",   # VERY BAD goes on top
+    "Harvested legally, got a ticket (BAD)",   # VERY BAD goes on top
     "Harvested illegally, did not get a ticket (BAD)",
     "Harvested illegally, got a ticket (GOOD)",
     "Harvested legally, did not get a ticket (GOOD)"
@@ -214,22 +220,63 @@ dat_all %>%
   ggplot(aes(x = coxa.width.tested, y = prop, fill = class)) +
   geom_col(position = "stack") +
   scale_fill_manual(values = c(
-    "Harvested illegally, got a ticket (GOOD)" = "#009E73", #true posisitve
-    "Harvested legally, did not get a ticket (GOOD)" = "#56B4E9", # true negative
-    "Harvested legally, got a ticket (VERY BAD)" = "#D55E00", #false positive
-    "Harvested illegally, did not get a ticket (BAD)" = "#D69F00" #false negative
+    "Harvested illegally, got a ticket (GOOD)" = "#00496f", # "#009E73", #true posisitve
+    "Harvested legally, did not get a ticket (GOOD)" = "#0f85a0", # true negative
+    "Harvested legally, got a ticket (BAD)" = "#dd4124", #false positive
+    "Harvested illegally, did not get a ticket (BAD)" = "#ed8b00" #false negative
   )) +
   scale_y_continuous(labels = scales::percent) +
   labs(
-    title = "Agreement and Error Types",
+    title = "Crab Measurement Test Results",
     y = "Percent of observations",
-    x = "",
+    x = "Coxa test threshold (mm)",
     fill = ""
   ) +
   theme_minimal(base_size = 14) -> fig_one
 
 #ggsave("figures/fig_one_unfiltered.png", fig_one, width =10, height = 6, dpi = 300)
 ggsave("figures/fig_one_filtered.png", fig_one, width =10, height = 6, dpi = 300)
+
+###figure one side by side bar plot
+
+dat_all %>%
+  mutate(class = case_when(
+    true_positive == 1 ~ "Harvested illegally, got a ticket (GOOD)", #true positive
+    false_positive == 1 ~ "Harvested legally, got a ticket (BAD)", #false positive
+    true_negative == 1 ~ "Harvested legally, did not get a ticket (GOOD)", #true negatice
+    false_negative == 1 ~ "Harvested illegally, did not get a ticket (BAD)" #false negative
+  ),
+  Region ="",
+  # set factor levels in the order you want them stacked (bottom → top)
+  class = factor(class, levels = c(
+    "Harvested legally, got a ticket (BAD)",   # VERY BAD goes on top
+    "Harvested illegally, did not get a ticket (BAD)",
+    "Harvested illegally, got a ticket (GOOD)",
+    "Harvested legally, did not get a ticket (GOOD)"
+  ))
+  ) %>%
+  count(Region, class, coxa.width.tested) %>%
+  group_by(Region, coxa.width.tested) %>%
+  mutate(prop = n / sum(n)) %>%
+  ggplot(aes(x = coxa.width.tested, y = prop, fill = class)) +
+  geom_col(position = "dodge2") +
+  scale_fill_manual(values = c(
+    "Harvested illegally, got a ticket (GOOD)" = "#00496f", # "#009E73", #true posisitve
+    "Harvested legally, did not get a ticket (GOOD)" = "#0f85a0", # true negative
+    "Harvested legally, got a ticket (BAD)" = "#dd4124", #false positive
+    "Harvested illegally, did not get a ticket (BAD)" = "#ed8b00" #false negative
+  )) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    title = "Crab Measurement Test Results",
+    y = "Percent of observations",
+    x = "",
+    fill = ""
+  ) +
+  theme_minimal(base_size = 14) -> fig_one_dodge
+
+ggsave("figures/fig_one_dodge_filtered.png", fig_one_dodge, width =10, height = 6, dpi = 300)
+
 
 ######
 #Neat, that should be good enough in the data viz department. Now let's get some stats.
@@ -323,3 +370,7 @@ write.csv(temp3, "results/coxa test 33 FILTERED.csv")
 #    sens_33 = mean(Coxa.test33[Stick.legal == 1]),
 #    spec_33 = mean(1 - Coxa.test33[Stick.legal == 0])
 #  )
+
+#theme_adfg testing
+fig_one_adfg_test <- fig_one + theme_adfg()
+ggsave("figures/fig_one_adfg_test_filtered.png", fig_one_adfg_test, width =10, height = 6, dpi = 300)
