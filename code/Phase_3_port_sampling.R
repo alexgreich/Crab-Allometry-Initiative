@@ -29,7 +29,7 @@ length(port_dat1$Carapace.length..mm.)
 ggplot(port_dat1) + aes(x=Carapace.length..mm.) + geom_density() #ok... we got a good amount of larger crab, and no crab under 142
 
 #make a plot like phase 2, indentifying the flase postives, negatives, for 31 and 32
-View(port_dat1)
+#View(port_dat1)
 
 
 #restructure dataframe so that I indentify true postives, false postives, true negatives, false negatives for 31 and 32
@@ -58,37 +58,30 @@ dat_comb <- rbind(port_dat_31_results, port_dat_32_results) %>%
   mutate(Test.threshold = factor(Test.threshold))
 
 
-#AGR HERE!! - making my graph. maybe need to pull some more stuff from Fig 1
+##need to change the label names
+##perhaps this does not need to be a graph, can be a table, or a statement
 dat_comb %>%
   mutate(class = case_when(
-    #true_positive == 1 ~ "Harvested illegally, got a ticket (GOOD)", #true positive
     false_positive == 1 ~ "Harvested legally, got a ticket (BAD)", #false positive
     true_negative == 1 ~ "Harvested legally, did not get a ticket (GOOD)"#, #true negatice
-    #false_negative == 1 ~ "Harvested illegally, did not get a ticket (BAD)" #false negative
   ),
-  Region ="",
-  # set factor levels in the order you want them stacked (bottom → top)
   class = factor(class, levels = c(
-    "Harvested legally, got a ticket (BAD)",   # VERY BAD goes on top
-    #"Harvested illegally, did not get a ticket (BAD)"#,
-    #"Harvested illegally, got a ticket (GOOD)"#,
+    "Harvested legally, got a ticket (BAD)",   
     "Harvested legally, did not get a ticket (GOOD)"
   ))
   ) %>%
-  count(class, coxa.width.tested) %>%
-  group_by(coxa.width.tested) %>%
+  count(class, Test.threshold) %>% 
+  group_by(Test.threshold) %>%
   mutate(prop = n / sum(n)) %>%
-  ggplot(aes(x = coxa.width.tested, y = prop, fill = class)) +
+  ggplot(aes(x = Test.threshold, y = prop, fill = class)) +
   geom_col(position = "stack") +
   scale_fill_manual(values = c(
-    #"Harvested illegally, got a ticket (GOOD)" = "#00496f", # "#009E73", #true posisitve
     "Harvested legally, did not get a ticket (GOOD)" = "#0f85a0", # true negative
     "Harvested legally, got a ticket (BAD)" = "#dd4124"#, #false positive
-    #"Harvested illegally, did not get a ticket (BAD)" = "#ed8b00" #false negative
   )) +
   scale_y_continuous(labels = scales::percent) +
   labs(
-    title = "Crab Measurement Test Results",
+    title = "Port Sampling Test Results",
     y = "Percent of observations",
     x = "Coxa test threshold (mm)",
     fill = ""
@@ -96,9 +89,9 @@ dat_comb %>%
   theme_minimal(base_size = 14) -> fig_P3
 
 
-#this was really only a test for false positive vs. true positive...
-pnw_palettes$Bay #note the palette color ID #'s
+#ok well. That figure doesn't tell us much.
+#This info would be better as a table. OR, as a couple of sentences.
 
-#combine the 31 and 32mm results into one df please.
+#Make a table, and save it: AGR HERE
 
 
