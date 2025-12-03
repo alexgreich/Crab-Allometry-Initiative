@@ -6,7 +6,14 @@ library(adfggraph) #may need to install from github
 #library(adfgcolors) #may need to install from github
 #devtools::install_github("jakelawlor/PNWColors") 
 library(PNWColors)
+library(RColorBrewer)
 
+#messing with color brewer
+#mypalette<-brewer.pal(7,"Spectral")
+#display.brewer.pal(7,"Spectral")
+#display.brewer.pal(12,"Paired")
+#mypalette<-brewer.pal(12,"Paired") 
+#use: more similar and lighter colors for "good". Use less similar and darker (or bolder...) colors for "bad"
 
 ##first data set collected June 2025 in st. James Bay by Chris (and Trooper??)
 dat1 <- read.csv("data/trooper test data/enforcement test data.csv")
@@ -156,7 +163,7 @@ dat_all$coxa.width.tested <- as.factor(dat_all$coxa.width.tested)
 
 #data visualize
 library(cowplot)
-dat_all %>%
+dat_all %>% #FLAG - this graph will crash, I havent bothered to match the labels...
   mutate(class = case_when(
     true_positive == 1 ~ "Harvested illegally, got a ticket (GOOD)", #true positive
     false_positive == 1 ~ "Harvested legally, got a ticket (VERY BAD)", #false positive
@@ -165,10 +172,10 @@ dat_all %>%
   ),
   # set factor levels in the order you want them stacked (bottom → top)
   class = factor(class, levels = c(
-    "Harvested legally, got a ticket (VERY BAD)",   # VERY BAD goes on top
-    "Harvested illegally, did not get a ticket (BAD)",
-    "Harvested illegally, got a ticket (GOOD)",
-    "Harvested legally, did not get a ticket (GOOD)"
+    "Error (Type I): Legal crab measured as illegal",#"Harvested legally, got a ticket (VERY BAD)",   # VERY BAD goes on top
+    "Error (Type II): Illegal crab measured as legal",#"Harvested illegally, did not get a ticket (BAD)",
+    "Correct: Illegal crab measured as illegal",#"Harvested illegally, got a ticket (GOOD)",
+    "Correct: legal crab measured as legal"#Harvested legally, did not get a ticket (GOOD)"
   ))
   ) %>%
   count(Location, class, coxa.width.tested) %>%
@@ -200,18 +207,18 @@ names(pnw_palettes) #getting BAY colors
 
 dat_all %>%
   mutate(class = case_when(
-    true_positive == 1 ~ "Harvested illegally, got a ticket (GOOD)", #true positive
-    false_positive == 1 ~ "Harvested legally, got a ticket (BAD)", #false positive
-    true_negative == 1 ~ "Harvested legally, did not get a ticket (GOOD)", #true negatice
-    false_negative == 1 ~ "Harvested illegally, did not get a ticket (BAD)" #false negative
+    true_positive == 1 ~ "Correct: Illegal crab measured as illegal",#"Harvested illegally, got a ticket (GOOD)", #true positive
+    false_positive == 1 ~ "Error (Type I): Legal crab measured as illegal",#"Harvested legally, got a ticket (BAD)", #false positive
+    true_negative == 1 ~ "Correct: Legal crab measured as legal",#"Harvested legally, did not get a ticket (GOOD)", #true negatice
+    false_negative == 1 ~ "Error (Type II): Illegal crab measured as legal"#"Harvested illegally, did not get a ticket (BAD)" #false negative
   ),
   Region ="",
   # set factor levels in the order you want them stacked (bottom → top)
   class = factor(class, levels = c(
-    "Harvested legally, got a ticket (BAD)",   # VERY BAD goes on top
-    "Harvested illegally, did not get a ticket (BAD)",
-    "Harvested illegally, got a ticket (GOOD)",
-    "Harvested legally, did not get a ticket (GOOD)"
+    "Error (Type I): Legal crab measured as illegal",#"Harvested legally, got a ticket (BAD)",   # VERY BAD goes on top
+    "Error (Type II): Illegal crab measured as legal",#"Harvested illegally, did not get a ticket (BAD)",
+    "Correct: Illegal crab measured as illegal",#"Harvested illegally, got a ticket (GOOD)",
+    "Correct: Legal crab measured as legal"#"Harvested legally, did not get a ticket (GOOD)"
   ))
   ) %>%
   count(Region, class, coxa.width.tested) %>%
@@ -220,10 +227,10 @@ dat_all %>%
   ggplot(aes(x = coxa.width.tested, y = prop, fill = class)) +
   geom_col(position = "stack") +
   scale_fill_manual(values = c(
-    "Harvested illegally, got a ticket (GOOD)" = "#00496f", # "#009E73", #true posisitve
-    "Harvested legally, did not get a ticket (GOOD)" = "#0f85a0", # true negative
-    "Harvested legally, got a ticket (BAD)" = "#dd4124", #false positive
-    "Harvested illegally, did not get a ticket (BAD)" = "#ed8b00" #false negative
+    "Correct: Illegal crab measured as illegal" = "#6FB9D6",#"#7FD1B9", #"#00496f", # "#009E73", #true posisitve
+    "Correct: Legal crab measured as legal" = "#4A97C7",#4CA3D9", #"#0f85a0", # true negative
+    "Error (Type I): Legal crab measured as illegal" = "#7A0026",#C44536", #"#dd4124", #false positive
+    "Error (Type II): Illegal crab measured as legal" = "#FF5A3C" #"#FF6F59" #"#ed8b00" #false negative
   )) +
   scale_y_continuous(labels = scales::percent) +
   labs(
@@ -241,18 +248,18 @@ ggsave("figures/fig_one_filtered.png", fig_one, width =10, height = 6, dpi = 300
 
 dat_all %>%
   mutate(class = case_when(
-    true_positive == 1 ~ "Harvested illegally, got a ticket (GOOD)", #true positive
-    false_positive == 1 ~ "Harvested legally, got a ticket (BAD)", #false positive
-    true_negative == 1 ~ "Harvested legally, did not get a ticket (GOOD)", #true negatice
-    false_negative == 1 ~ "Harvested illegally, did not get a ticket (BAD)" #false negative
+    true_positive == 1 ~ "Correct: Illegal crab measured as illegal",#"Harvested illegally, got a ticket (GOOD)", #true positive
+    false_positive == 1 ~ "Error (Type I): Legal crab measured as illegal",#"Harvested legally, got a ticket (BAD)", #false positive
+    true_negative == 1 ~ "Correct: Legal crab measured as legal",#"Harvested legally, did not get a ticket (GOOD)", #true negatice
+    false_negative == 1 ~ "Error (Type II): Illegal crab measured as legal"#"Harvested illegally, did not get a ticket (BAD)" #false negative
   ),
   Region ="",
   # set factor levels in the order you want them stacked (bottom → top)
   class = factor(class, levels = c(
-    "Harvested legally, got a ticket (BAD)",   # VERY BAD goes on top
-    "Harvested illegally, did not get a ticket (BAD)",
-    "Harvested illegally, got a ticket (GOOD)",
-    "Harvested legally, did not get a ticket (GOOD)"
+    "Error (Type I): Legal crab measured as illegal",#"Harvested legally, got a ticket (BAD)",   # VERY BAD goes on top
+    "Error (Type II): Illegal crab measured as legal",#"Harvested illegally, did not get a ticket (BAD)",
+    "Correct: Illegal crab measured as illegal",#"Harvested illegally, got a ticket (GOOD)",
+    "Correct: Legal crab measured as legal"#"Harvested legally, did not get a ticket (GOOD)"
   ))
   ) %>%
   count(Region, class, coxa.width.tested) %>%
@@ -261,10 +268,10 @@ dat_all %>%
   ggplot(aes(x = coxa.width.tested, y = prop, fill = class)) +
   geom_col(position = "dodge2") +
   scale_fill_manual(values = c(
-    "Harvested illegally, got a ticket (GOOD)" = "#00496f", # "#009E73", #true posisitve
-    "Harvested legally, did not get a ticket (GOOD)" = "#0f85a0", # true negative
-    "Harvested legally, got a ticket (BAD)" = "#dd4124", #false positive
-    "Harvested illegally, did not get a ticket (BAD)" = "#ed8b00" #false negative
+    "Correct: Illegal crab measured as illegal" = "#00496f", # "#009E73", #true posisitve
+    "Correct: Legal crab measured as legal" = "#0f85a0", # true negative
+    "Error (Type I): Legal crab measured as illegal" = "#dd4124", #false positive
+    "Error (Type II): Illegal crab measured as legal" = "#ed8b00" #false negative
   )) +
   scale_y_continuous(labels = scales::percent) +
   labs(
@@ -280,6 +287,7 @@ ggsave("figures/fig_one_dodge_filtered.png", fig_one_dodge, width =10, height = 
 
 ######
 #Neat, that should be good enough in the data viz department. Now let's get some stats.
+#AGR here probs have to update names as well
 dat_sum <- dat_all %>%
   mutate(class = case_when(
     true_positive == 1 ~ "True positive (sensitivity)",
