@@ -348,8 +348,9 @@ table_31_poster <- temp1.2 %>% select(-class, -coxa.width.tested) %>%
   select(Interpretation, n, prop) %>%
   rename(Proportion = prop)
 
-addline_31 <- data.frame(Interp)
+addline_31 <- data.frame(Interpretation = "Total", n=sum(table_31_poster$n), Proportion = sum(table_31_poster$Proportion))
 
+table_31_poster <- rbind(table_31_poster, addline_31)
 
 #write.csv(temp1.2, "results/coxa test 31 FILTERED.csv")
 write.csv(table_31_poster, "results/coxa test 31 FILTERED poster.csv")
@@ -366,8 +367,17 @@ temp2 <- dat_sum %>% filter(coxa.width.tested == 32)  %>% select(-Region) %>%
   ) %>% arrange(class) %>%
   left_join(interp_table)
 
+#poster pretty
+table_32_poster <- temp2 %>% select(-class, -coxa.width.tested) %>%
+  select(Interpretation, n, prop) %>%
+  rename(Proportion = prop)
+
+addline_32 <- data.frame(Interpretation = "Total", n=sum(table_32_poster$n), Proportion = sum(table_32_poster$Proportion))
+
+table_32_poster <- rbind(table_32_poster, addline_32)
+
 #write.csv(temp2, "results/coxa test 32 FILTERED.csv")
-write.csv(temp2, "results/coxa test 32 FILTERED poster.csv")
+write.csv(table_32_poster, "results/coxa test 32 FILTERED poster.csv")
 #write.csv(temp2, "results/coxa test 32 UNFILTERED.csv")
 
 temp3 <- dat_sum %>% filter(coxa.width.tested == 33)  %>% select(-Region) %>%
@@ -380,9 +390,18 @@ temp3 <- dat_sum %>% filter(coxa.width.tested == 33)  %>% select(-Region) %>%
     ))
   ) %>% arrange(class) %>%
   left_join(interp_table)
+
+#poster pretty
+table_33_poster <- temp2 %>% select(-class, -coxa.width.tested) %>%
+  select(Interpretation, n, prop) %>%
+  rename(Proportion = prop)
+
+addline_33 <- data.frame(Interpretation = "Total", n=sum(table_33_poster$n), Proportion = sum(table_33_poster$Proportion))
+
+table_33_poster <- rbind(table_33_poster, addline_33)
   
 #write.csv(temp3, "results/coxa test 33 FILTERED.csv")
-write.csv(temp3, "results/coxa test 33 FILTERED poster.csv")
+write.csv(table_33_poster, "results/coxa test 33 FILTERED poster.csv")
 #write.csv(temp3, "results/coxa test 33 UNFILTERED.csv")
 
 
