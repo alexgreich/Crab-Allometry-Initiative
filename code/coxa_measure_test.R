@@ -2,11 +2,12 @@
 #Alex Reich
 
 library(tidyverse)
+#install ADFG graph here plz. FLAG!!
 library(adfggraph) #may need to install from github
 #library(adfgcolors) #may need to install from github
 #devtools::install_github("jakelawlor/PNWColors") 
-library(PNWColors)
-library(RColorBrewer)
+#library(PNWColors)
+#library(RColorBrewer)
 
 #messing with color brewer
 #mypalette<-brewer.pal(7,"Spectral")
@@ -200,10 +201,12 @@ dat_all %>% #FLAG - this graph will crash, I havent bothered to match the labels
   facet_wrap(~ coxa.width.tested) -> fig_two
 
 #ggsave("figures/fig_two_unfiltered.png", fig_two, width =10, height = 6, dpi = 300)
-ggsave("figures/fig_two_filtered.png", fig_two, width =10, height = 6, dpi = 300)
+#ggsave("figures/fig_two_filtered.png", fig_two, width =10, height = 6, dpi = 300)
+#fig two colors and labels are off right now... I was lazy. AGR 12/3/25
 
 #sum over location
-names(pnw_palettes) #getting BAY colors
+#names(pnw_palettes) #getting BAY colors
+##I ended up choosing colors based on Wes Anderson's Zissou1
 
 dat_all %>%
   mutate(class = case_when(
@@ -244,6 +247,13 @@ dat_all %>%
 #ggsave("figures/fig_one_unfiltered.png", fig_one, width =10, height = 6, dpi = 300)
 ggsave("figures/fig_one_filtered.png", fig_one, width =10, height = 6, dpi = 300)
 
+#fig_one_adfg_poster <- fig_one + theme_adfg(font_family = "Arial")+#+#+ #make it presentable (also theme_ADFG needs to be installed again...)
+ # theme(legend.position = "bottom" )#ok.... I want it stacked tho, like it was on the side 
+
+#screw it
+fig_one_adfg_poster <- fig_one + theme_adfg(font_family = "Arial", box = "FALSE")
+ggsave("figures/fig_one_filtered_poster.png", fig_one_adfg_poster, width =10, height = 6, dpi = 300)
+
 ###figure one side by side bar plot
 
 dat_all %>%
@@ -282,7 +292,7 @@ dat_all %>%
   ) +
   theme_minimal(base_size = 14) -> fig_one_dodge
 
-ggsave("figures/fig_one_dodge_filtered.png", fig_one_dodge, width =10, height = 6, dpi = 300)
+#ggsave("figures/fig_one_dodge_filtered.png", fig_one_dodge, width =10, height = 6, dpi = 300)
 
 
 ######
@@ -290,18 +300,19 @@ ggsave("figures/fig_one_dodge_filtered.png", fig_one_dodge, width =10, height = 
 #AGR here probs have to update names as well
 dat_sum <- dat_all %>%
   mutate(class = case_when(
-    true_positive == 1 ~ "True positive (sensitivity)",
-    false_positive == 1 ~ "False positive",
-    true_negative == 1 ~ "True negative (specificity)",
-    false_negative == 1 ~ "False negative"
+    true_positive == 1 ~ "True positive (sensitivity)", #"Correct: Illegal crab measured as illegal",
+    false_positive == 1 ~ "False positive", #"Error (Type I): Legal crab measured as illegal",
+    true_negative == 1 ~ "True negative (specificity)", #"Correct: Legal crab measured as legal",
+    false_negative == 1 ~ "False negative" #"Error (Type II): Illegal crab measured as legal"
   ),
   Region ="") %>%
   count(Region, class, coxa.width.tested) %>%
   group_by(Region, coxa.width.tested) %>%
   mutate(prop = n / sum(n))%>%
-  ungroup()
+  ungroup()# %>%
+ # select(-Region)
 
-#hmm. let's make some tables
+#hmm. let's make some tables - I think obsolete now, AGR
 interp_table = data.frame(class =c(
   "False positive",
   "False negative",
@@ -309,10 +320,10 @@ interp_table = data.frame(class =c(
   "True negative (specificity)"
 ),
   Interpretation = c(
-    "Harvested legally, got a ticket (VERY BAD)",
-    "Harvested illegally, did not get a ticket (BAD)",
-    "Harvested illegally, got a ticket (GOOD)",
-    "Harvested legally, did not get a ticket (GOOD)"
+    "Error (Type I): Legal crab measured as illegal",
+    "Error (Type II): Illegal crab measured as legal",
+    "Correct: Illegal crab measured as illegal",
+    "Correct: Legal crab measured as legal"
     
   )
 )
@@ -332,7 +343,16 @@ temp1.2 <- rbind(temp1, temp1.1) %>%
   arrange(class) %>%
   left_join(interp_table)
 
-write.csv(temp1.2, "results/coxa test 31 FILTERED.csv")
+#poster pretty
+table_31_poster <- temp1.2 %>% select(-class, -coxa.width.tested) %>%
+  select(Interpretation, n, prop) %>%
+  rename(Proportion = prop)
+
+addline_31 <- data.frame(Interp)
+
+
+#write.csv(temp1.2, "results/coxa test 31 FILTERED.csv")
+write.csv(table_31_poster, "results/coxa test 31 FILTERED poster.csv")
 #write.csv(temp1.2, "results/coxa test 31 UNFILTERED.csv")
 
 temp2 <- dat_sum %>% filter(coxa.width.tested == 32)  %>% select(-Region) %>%
@@ -346,7 +366,8 @@ temp2 <- dat_sum %>% filter(coxa.width.tested == 32)  %>% select(-Region) %>%
   ) %>% arrange(class) %>%
   left_join(interp_table)
 
-write.csv(temp2, "results/coxa test 32 FILTERED.csv")
+#write.csv(temp2, "results/coxa test 32 FILTERED.csv")
+write.csv(temp2, "results/coxa test 32 FILTERED poster.csv")
 #write.csv(temp2, "results/coxa test 32 UNFILTERED.csv")
 
 temp3 <- dat_sum %>% filter(coxa.width.tested == 33)  %>% select(-Region) %>%
@@ -360,7 +381,8 @@ temp3 <- dat_sum %>% filter(coxa.width.tested == 33)  %>% select(-Region) %>%
   ) %>% arrange(class) %>%
   left_join(interp_table)
   
-write.csv(temp3, "results/coxa test 33 FILTERED.csv")
+#write.csv(temp3, "results/coxa test 33 FILTERED.csv")
+write.csv(temp3, "results/coxa test 33 FILTERED poster.csv")
 #write.csv(temp3, "results/coxa test 33 UNFILTERED.csv")
 
 
@@ -380,5 +402,5 @@ write.csv(temp3, "results/coxa test 33 FILTERED.csv")
 #  )
 
 #theme_adfg testing
-fig_one_adfg_test <- fig_one + theme_adfg()
-ggsave("figures/fig_one_adfg_test_filtered.png", fig_one_adfg_test, width =10, height = 6, dpi = 300)
+##fig_one_adfg_test <- fig_one + theme_adfg()
+##ggsave("figures/fig_one_adfg_test_filtered.png", fig_one_adfg_test, width =10, height = 6, dpi = 300)
