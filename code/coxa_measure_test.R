@@ -392,7 +392,7 @@ temp3 <- dat_sum %>% filter(coxa.width.tested == 33)  %>% select(-Region) %>%
   left_join(interp_table)
 
 #poster pretty
-table_33_poster <- temp2 %>% select(-class, -coxa.width.tested) %>%
+table_33_poster <- temp3 %>% select(-class, -coxa.width.tested) %>%
   select(Interpretation, n, prop) %>%
   rename(Proportion = prop)
 
