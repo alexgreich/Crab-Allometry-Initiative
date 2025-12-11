@@ -88,10 +88,52 @@ dat_comb %>%
   ) +
   theme_minimal(base_size = 14) -> fig_P3
 
+fig_P3
+
 
 #ok well. That figure doesn't tell us much.
 #This info would be better as a table. OR, as a couple of sentences.
 
-#Make a table, and save it: AGR HERE
+#Make a table, and save it: 
+table_df <- dat_comb %>%
+  mutate(class = case_when(
+    false_positive == 1 ~ "Error (Type 1): Legal crab measured as illegal",#Harvested legally, got a ticket (BAD)", #false positive
+    true_negative == 1 ~ "Correct: Legal crab measured as legal"#"Harvested legally, did not get a ticket (GOOD)"#, #true negatice
+  ),
+  class = factor(class, levels = c(
+    "Error (Type 1): Legal crab measured as illegal",#"Harvested legally, got a ticket (BAD)",   
+    "Correct: Legal crab measured as legal"#"Harvested legally, did not get a ticket (GOOD)"
+  ))
+  ) %>%
+  count(class, Test.threshold) %>% 
+  group_by(Test.threshold) %>%
+  mutate(prop = n / sum(n))
+
+#View(table_df)
+names(table_df)
+
+#add a line to my table for the 0% of errors with 31mm crab
+addline <- tibble(class = "Error (Type 1): Legal crab measured as illegal",
+                      Test.threshold = 31,
+                      n = 0,
+                      prop = 0
+                      ) %>%
+  mutate(class = factor(class),
+         Test.threshold = factor(Test.threshold))#,
+         #n = integer(n)
+         #)
 
 
+table_df2 <- rbind(table_df, addline) %>%
+  rename(Interpretation = class, Proportion = prop)
+  
+
+table_df_31 <- table_df2 %>% filter(Test.threshold == 31) %>%
+  select(-Test.threshold)
+
+table_df_32 <- table_df2 %>% filter(Test.threshold == 32) %>%
+  select(-Test.threshold)
+
+#save my tables
+write.csv(table_df_31, file = "results/Port Sampling Table 31.csv")
+write.csv(table_df_32, file = "results/Port Sampling Table 32.csv")
