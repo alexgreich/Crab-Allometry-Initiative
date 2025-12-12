@@ -29,7 +29,8 @@ range(na.omit(dat1$Carapace.width))
 
 #FILTER OUT SMALL CRAB OPTION BELOW - TURN OFF OR ON
 #dat1 <- dat1 %>% filter(Carapace.width > 159) #optional filtered - turn on or off to get rid of the non-marginal too-small crab
-dat1 <- dat1 %>% filter(Carapace.width > 160 & Carapace.width <195) #using CI's from Allometry Code AGR - 161 to 194
+#dat1 <- dat1 %>% filter(Carapace.width > 160 & Carapace.width <192) #using CI's from Allometry Code AGR - 161 to 194
+dat1 <- dat1 %>% filter(Carapace.width > 161 & Carapace.width <195) #using CI's from Allometry Code AGR - 162 to 194
 
 #second data set collected July 2025 in Juneau area
 dat2 <- read.csv("data/trooper test data/Legal_coxa_testing.csv")
