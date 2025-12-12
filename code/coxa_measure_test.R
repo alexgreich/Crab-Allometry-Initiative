@@ -28,8 +28,8 @@ range(na.omit(dat1$Carapace.width))
 ##yeah, I'm going to cut off below 160 in CW- or at least add code for it that can be turned off or on
 
 #FILTER OUT SMALL CRAB OPTION BELOW - TURN OFF OR ON
-dat1 <- dat1 %>% filter(Carapace.width > 159) #optional filtered - turn on or off to get rid of the non-marginal too-small crab
-
+#dat1 <- dat1 %>% filter(Carapace.width > 159) #optional filtered - turn on or off to get rid of the non-marginal too-small crab
+dat1 <- dat1 %>% filter(Carapace.width > 160 & Carapace.width <195) #using CI's from Allometry Code AGR - 161 to 194
 
 #second data set collected July 2025 in Juneau area
 dat2 <- read.csv("data/trooper test data/Legal_coxa_testing.csv")
@@ -38,7 +38,9 @@ dat2 <- read.csv("data/trooper test data/Legal_coxa_testing.csv")
 names(dat2)
 #View(dat2)
 unique(dat2$Carapace.length..mm.) #oh, these were targeted small crab. nice. 
+range(dat2$Carapace.length..mm.)
 
+dat2 <- dat2%>% filter(Carapace.length..mm. > 137 & Carapace.length..mm. < 156) #CL's of interest
 
 #well, these datasets are set up differently
 ##so I'll treat them differently.
@@ -245,14 +247,15 @@ dat_all %>%
   theme_minimal(base_size = 14) -> fig_one
 
 #ggsave("figures/fig_one_unfiltered.png", fig_one, width =10, height = 6, dpi = 300)
-ggsave("figures/fig_one_filtered.png", fig_one, width =10, height = 6, dpi = 300)
+#ggsave("figures/fig_one_filtered.png", fig_one, width =10, height = 6, dpi = 300)
+ggsave("figures/fig_one_filtered_2.png", fig_one, width =10, height = 6, dpi = 300)
 
 #fig_one_adfg_poster <- fig_one + theme_adfg(font_family = "Arial")+#+#+ #make it presentable (also theme_ADFG needs to be installed again...)
  # theme(legend.position = "bottom" )#ok.... I want it stacked tho, like it was on the side 
 
 #screw it
 fig_one_adfg_poster <- fig_one + theme_adfg(font_family = "Arial", box = "FALSE")
-ggsave("figures/fig_one_filtered_poster.png", fig_one_adfg_poster, width =10, height = 6, dpi = 300)
+ggsave("figures/fig_one_filtered_poster_2.png", fig_one_adfg_poster, width =10, height = 6, dpi = 300)
 
 ###figure one side by side bar plot
 
@@ -353,7 +356,7 @@ addline_31 <- data.frame(Interpretation = "Total", n=sum(table_31_poster$n), Pro
 table_31_poster <- rbind(table_31_poster, addline_31)
 
 #write.csv(temp1.2, "results/coxa test 31 FILTERED.csv")
-write.csv(table_31_poster, "results/coxa test 31 FILTERED poster.csv")
+write.csv(table_31_poster, "results/coxa test 31 FILTERED poster 2.csv")
 #write.csv(temp1.2, "results/coxa test 31 UNFILTERED.csv")
 
 temp2 <- dat_sum %>% filter(coxa.width.tested == 32)  %>% select(-Region) %>%
@@ -377,7 +380,7 @@ addline_32 <- data.frame(Interpretation = "Total", n=sum(table_32_poster$n), Pro
 table_32_poster <- rbind(table_32_poster, addline_32)
 
 #write.csv(temp2, "results/coxa test 32 FILTERED.csv")
-write.csv(table_32_poster, "results/coxa test 32 FILTERED poster.csv")
+write.csv(table_32_poster, "results/coxa test 32 FILTERED poster 2.csv")
 #write.csv(temp2, "results/coxa test 32 UNFILTERED.csv")
 
 temp3 <- dat_sum %>% filter(coxa.width.tested == 33)  %>% select(-Region) %>%
@@ -401,7 +404,7 @@ addline_33 <- data.frame(Interpretation = "Total", n=sum(table_33_poster$n), Pro
 table_33_poster <- rbind(table_33_poster, addline_33)
   
 #write.csv(temp3, "results/coxa test 33 FILTERED.csv")
-write.csv(table_33_poster, "results/coxa test 33 FILTERED poster.csv")
+write.csv(table_33_poster, "results/coxa test 33 FILTERED poster 2.csv")
 #write.csv(temp3, "results/coxa test 33 UNFILTERED.csv")
 
 

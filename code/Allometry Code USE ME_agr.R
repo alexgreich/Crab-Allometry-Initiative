@@ -13,6 +13,34 @@ rkc.males[, 'Year'] <- as.factor(rkc.males[, 'Year'])
 rkc.males[, 'Species'] <- as.factor(rkc.males[, 'Species'])
 rkc.males[, 'Number'] <- as.factor(rkc.males[, 'Number'])
 
+#AGR here 11/25/25
+##CL CW graph
+ggplot(rkc.males) + aes(x=Carapace.length..mm., y= Carapace.width.including.spines..mm.) + geom_point()+
+  geom_smooth(method = "lm", se=TRUE) + geom_vline(xintercept = 155, color="red", linetype = "dashed")+ geom_vline(xintercept = 138, color="red", linetype = "dashed")+
+  geom_hline(yintercept = 178, color = "skyblue", linetype = "dashed")+
+  geom_hline(yintercept = 160, color = "green", linetype = "dashed")+
+  geom_hline(yintercept = 198, color = "green", linetype = "dashed")+
+  geom_hline(yintercept = 154, color = "purple", linetype = "dashed")
+
+
+#what is the SE of the dataset?
+mean_rkc_cw <- mean(rkc.males$Carapace.width.including.spines..mm.)
+sd_rkc_cw <- sd(rkc.males$Carapace.width.including.spines..mm.)
+
+mean_rkc_cw -  1.96*sd_rkc_cw
+mean_rkc_cw +  1.96*sd_rkc_cw
+
+#se of data filteres
+rkc_m_filtered <- rkc.males %>% filter(Carapace.length..mm. > 137 & Carapace.length..mm. < 156)
+
+mean_rkc_cw_filt <- mean(rkc_m_filtered$Carapace.width.including.spines..mm.)
+sd_rkc_cw_filt <- sd(rkc_m_filtered$Carapace.width.including.spines..mm.)
+mean_rkc_cw_filt - 1.96*sd_rkc_cw_filt
+mean_rkc_cw_filt + 1.96*sd_rkc_cw_filt
+#CI is 161.33 to 194.22 mm for cw within the 138-155 threshold of interest
+  
+  #AGR end
+
 rkc.males.cor <- cor(rkc.males[, unlist(lapply(rkc.males, is.numeric))], use = "complete.obs")
 #View(rkc.males.cor)
 
