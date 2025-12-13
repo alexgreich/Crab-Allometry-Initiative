@@ -1,0 +1,6 @@
+"","Interpretation","n","Proportion"
+"1","Error (Type I): Legal crab measured as illegal",0,0
+"2","Error (Type II): Illegal crab measured as legal",71,0.375661375661376
+"3","Correct: Illegal crab measured as illegal",89,0.470899470899471
+"4","Correct: Legal crab measured as legal",29,0.153439153439153
+"5","Total",189,1

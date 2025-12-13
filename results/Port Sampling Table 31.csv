@@ -1,0 +1,3 @@
+"","Test.threshold","Interpretation","n","Proportion"
+"1","31","Correct: Legal crab measured as legal",133,1
+"2","31","Error (Type 1): Legal crab measured as illegal",0,0
