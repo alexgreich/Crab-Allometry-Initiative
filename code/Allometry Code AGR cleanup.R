@@ -3,10 +3,14 @@
 
 library(ggplot2)
 library(corrplot)
-library(RColorBrewer)
+#library(RColorBrewer)
 library(PerformanceAnalytics)
 library(reshape2)
 library(dplyr)
+#install.packages("remotes")
+#remotes::install_github("commfish/adfggraph", force=TRUE) - not working 12/15/25
+library(adfggraph)
+extrafont::loadfonts()
 
 # data set including 2025 juneau + st james bay crab
 
@@ -256,22 +260,72 @@ ggsave(plot = paper_fig, filename = "figures/Coxa width carapace width paper ver
 #AGR here. This graph would work.
 
 #POSTER EDIT:
-l1 <- l1 + labs(y=NULL)
-l2 <- l2 + labs(y=NULL)
-l3 <- l3 + labs(y=NULL)
+l1 <- l1 + labs(y=NULL) + theme(axis.ticks = element_line(linewidth=1.2),
+                                axis.ticks.length = unit(0.35, "cm"),
+                                legend.key.size = unit(1.4, "cm"),
+                                axis.text.x  = element_text(size = 22),
+                                axis.text.y  = element_text(size = 22),
+                                legend.position = c(0.25, 0.86),
+                                legend.text = element_text(
+                                  size = 22,
+                                  margin = margin(r = 20)
+                                )
+                                )
+l2 <- l2 + labs(y=NULL)+ theme(axis.ticks = element_line(linewidth=1.2),
+                               axis.ticks.length = unit(0.35, "cm"),
+                               axis.text.x  = element_text(size = 22),
+                               axis.text.y  = element_text(size = 22)
+)
+l3 <- l3 + labs(y=NULL) + theme(axis.ticks = element_line(linewidth=1.2),
+                                axis.ticks.length = unit(0.35, "cm"),
+                                axis.text.x  = element_text(size = 22),
+                                axis.text.y  = element_text(size = 22)
+)
 
-r1 <- r1 + labs(y=NULL)
-r2 <- r2 + labs(y=NULL)
-r3 <- r3 + labs(y=NULL)
+r1 <- r1 + labs(y=NULL) + theme(axis.ticks = element_line(linewidth=1.2),
+                                axis.ticks.length = unit(0.35, "cm"),
+                                axis.text.x  = element_text(size = 22),
+                                axis.text.y  = element_text(size = 22)
+)
+r2 <- r2 + labs(y=NULL) + theme(axis.ticks = element_line(linewidth=1.2),
+                                axis.ticks.length = unit(0.35, "cm"),
+                                axis.text.x  = element_text(size = 22),
+                                axis.text.y  = element_text(size = 22)
+)
+r3 <- r3 + labs(y=NULL) + theme(axis.ticks = element_line(linewidth=1.2),
+                                axis.ticks.length = unit(0.35, "cm"),
+                                axis.text.x  = element_text(size = 22),
+                                axis.text.y  = element_text(size = 22)
+)
 
   (l1 + r1) /
   (l2 + r2) /
   (l3 + r3) -> nolabs
 
-ggsave(plot = nolabs, filename = "figures/Coxa width carapace width poster version.png", width =12, height = 16, dpi = 300) #idk what height
-
+#ggsave(plot = nolabs, filename = "figures/Coxa width carapace width poster version.png", width =12, height = 16, dpi = 300) #idk what height
+ggsave(plot = nolabs, filename = "figures/Coxa width carapace width poster version 2.png", width =12, height = 16, dpi = 300)
 
 #ggsave that poster
+
+#AGR 12/15/25
+##what are my sample sizes for the correlation?
+unique(males$Carapace.width)
+unique(males$Coxa.walking.leg.1.LEFT)
+unique(males$Coxa.walking.leg.2.LEFT)
+unique(males$Coxa.walking.leg.3.LEFT)
+unique(males$Coxa.walking.leg.1.RIGHT)
+unique(males$Coxa.walking.leg.1.RIGHT)
+unique(males$Coxa.walking.leg.1.RIGHT)
+
+length(males$Coxa.walking.leg.1.LEFT)
+length(males$Coxa.walking.leg.2.LEFT)
+length(males$Coxa.walking.leg.3.LEFT)
+
+length(na.omit(males$Coxa.walking.leg.1.RIGHT))
+length(na.omit(males$Coxa.walking.leg.2.RIGHT))
+length(na.omit(males$Coxa.walking.leg.3.RIGHT))
+
+#end AGR 12/15/25
 
 
 #par(mfrow = NULLpar(mfrow = c(1, 1))
@@ -476,6 +530,11 @@ dim(males_2 %>% filter(max_coxa == 32)) #43 obs
 
 #half baked attempt
 thresholds <- 28:33  # the coxa thresholds you care about
+
+
+
+#AGR 12/15/25
+
 
 
 ###AGR 12/12/25
