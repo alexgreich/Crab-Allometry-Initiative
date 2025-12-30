@@ -252,7 +252,7 @@ library(patchwork)
   (l2 + r2) /
   (l3 + r3) -> paper_fig
 
-ggsave(plot = paper_fig, filename = "figures/Coxa width carapace width paper version.png", width =12, height = 16, dpi = 300) #idk what height
+#ggsave(plot = paper_fig, filename = "figures/Coxa width carapace width paper version.png", width =12, height = 16, dpi = 300) #idk what height
 
 #poster edit: title is Left coxa; Right coxa
 #poster y axis: first, second, thir
@@ -303,7 +303,170 @@ r3 <- r3 + labs(y=NULL) + theme(axis.ticks = element_line(linewidth=1.2),
   (l3 + r3) -> nolabs
 
 #ggsave(plot = nolabs, filename = "figures/Coxa width carapace width poster version.png", width =12, height = 16, dpi = 300) #idk what height
-ggsave(plot = nolabs, filename = "figures/Coxa width carapace width poster version 2.png", width =12, height = 16, dpi = 300)
+#ggsave(plot = nolabs, filename = "figures/Coxa width carapace width poster version 2.png", width =12, height = 16, dpi = 300)
+
+
+
+
+
+#ANOTHER POSTER EDIT:
+r1<-ggplot(data = males, aes(x = Carapace.width, y = Coxa.walking.leg.1.RIGHT, color = Legal)) +
+  geom_vline(xintercept = 178) +
+  #geom_hline(yintercept = 30) + 
+  #geom_hline(yintercept = 31, linetype= "dashed") +
+  #geom_hline(yintercept = 32, linetype = "dashed") +
+  #geom_hline(yintercept = 33, linetype = "dashed") + 
+  #geom_hline(yintercept = 34) + 
+  #geom_hline(yintercept = 35) +
+  #labs(x = "Carapace width (mm)", y = "1st right coxa width (mm)") +
+  labs(x = NULL, y = "1st right coxa width (mm)") +
+  #ggtitle("Right coxa")+
+  geom_point(alpha = 0.5) + 
+  scale_y_continuous(limits = c(11,51), expand = c(0,0), breaks = c(20, 30, 40, 50))+ #let's set a consistent y axis.
+  scale_color_manual(values = c("#6FB9D6", "#FF5A3C"), guide="none")+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"))+
+  theme_adfg(font_family="Arial", box = FALSE)+ #might have to change point size.
+  geom_smooth(method = "lm", color = "black", linetype = "dashed", se = FALSE) #added the linear model
+
+r2<-ggplot(data = males, aes(x = Carapace.width, y = Coxa.walking.leg.2.RIGHT, color = Legal)) +
+  geom_vline(xintercept = 178) +
+  #geom_hline(yintercept = 30) + 
+  #geom_hline(yintercept = 31, linetype= "dashed") +
+  #geom_hline(yintercept = 32, linetype = "dashed") +
+  #geom_hline(yintercept = 33, linetype = "dashed") + 
+  #geom_hline(yintercept = 34) + 
+  #geom_hline(yintercept = 35) +
+  #labs(x = "Carapace width (mm)", y = "1st right coxa width (mm)") +
+  labs(x = NULL, y = "2nd right coxa width (mm)") +
+  geom_point(alpha=0.5) + 
+  scale_y_continuous(limits = c(11,51), expand = c(0,0), breaks = c(20, 30, 40, 50))+ #let's set a consistent y axis.
+  scale_color_manual(values = c("#6FB9D6", "#FF5A3C"), guide="none")+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"))+
+  theme_adfg(font_family="Arial", box = FALSE)+ #might have to change point size.
+  geom_smooth(method = "lm", color = "black", linetype = "dashed", se = FALSE) 
+
+r3<-ggplot(data = males, aes(x = Carapace.width, y = Coxa.walking.leg.3.RIGHT, color = Legal)) +
+  geom_vline(xintercept = 178) +
+  #geom_hline(yintercept = 30) + 
+  #geom_hline(yintercept = 31, linetype= "dashed") +
+  #geom_hline(yintercept = 32, linetype = "dashed") +
+  #geom_hline(yintercept = 33, linetype = "dashed") + 
+  #geom_hline(yintercept = 34) + 
+  #geom_hline(yintercept = 35) +
+  labs(x = "Carapace width (mm)", y = "3rd right coxa width (mm)") +
+  #labs(x = NULL, y = "1st right coxa width (mm)") +
+  geom_point(alpha=0.5) + 
+  scale_y_continuous(limits = c(11,51), expand = c(0,0), breaks = c(20, 30, 40, 50))+ #let's set a consistent y axis.
+  scale_color_manual(values = c("#6FB9D6", "#FF5A3C"), guide="none")+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"))+
+  theme_adfg(font_family="Arial", box = FALSE)+ #might have to change point size.
+  geom_smooth(method = "lm", color = "black", linetype = "dashed", se = FALSE) 
+
+l1<-ggplot(data = males, aes(x = Carapace.width, y = Coxa.walking.leg.1.LEFT, color = Legal)) +
+  geom_vline(xintercept = 178) +
+  #geom_hline(yintercept = 30) + 
+  #geom_hline(yintercept = 31, linetype= "dashed") +
+  #geom_hline(yintercept = 32, linetype = "dashed") +
+  #geom_hline(yintercept = 33, linetype = "dashed") + 
+  #geom_hline(yintercept = 34) + 
+  #geom_hline(yintercept = 35) +
+  #labs(x = "Carapace width (mm)", y = "1st right coxa width (mm)") +
+  labs(x = NULL, y = "1st left coxa width (mm)") +
+  geom_point(alpha=0.5) + 
+  scale_y_continuous(limits = c(11,51), expand = c(0,0), breaks = c(20, 30, 40, 50))+ #let's set a consistent y axis.
+  scale_color_manual(values = c("#6FB9D6", "#FF5A3C"))+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"))+
+  theme_adfg(font_family="Arial", box = FALSE, legend.position = c(0.15, 0.93), legend.title=element_blank(),
+             legend.background = element_rect(
+               fill = "white", color="black", linewidth = 0.3
+             ))+ #might have to change point size.
+  geom_smooth(method = "lm", color = "black", linetype = "dashed", se = FALSE) 
+
+l2<-ggplot(data = males, aes(x = Carapace.width, y = Coxa.walking.leg.2.LEFT, color = Legal)) +
+  geom_vline(xintercept = 178) +
+  #geom_hline(yintercept = 30) + 
+  #geom_hline(yintercept = 31, linetype= "dashed") +
+  #geom_hline(yintercept = 32, linetype = "dashed") +
+  #geom_hline(yintercept = 33, linetype = "dashed") + 
+  #geom_hline(yintercept = 34) + 
+  #geom_hline(yintercept = 35) +
+  #labs(x = "Carapace width (mm)", y = "1st right coxa width (mm)") +
+  labs(x = NULL, y = "2nd left coxa width (mm)") +
+  geom_point(alpha=0.5) + 
+  scale_y_continuous(limits = c(11,51), expand = c(0,0), breaks = c(20, 30, 40, 50))+ #let's set a consistent y axis.
+  scale_color_manual(values = c("#6FB9D6", "#FF5A3C"), guide="none")+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"))+
+  theme_adfg(font_family="Arial", box = FALSE)+ #might have to change point size.
+  geom_smooth(method = "lm", color = "black", linetype = "dashed", se = FALSE) 
+
+l3<-ggplot(data = males, aes(x = Carapace.width, y = Coxa.walking.leg.3.LEFT, color = Legal)) +
+  geom_vline(xintercept = 178) +
+  #geom_hline(yintercept = 30) + 
+  #geom_hline(yintercept = 31, linetype= "dashed") +
+  #geom_hline(yintercept = 32, linetype = "dashed") +
+  #geom_hline(yintercept = 33, linetype = "dashed") + 
+  #geom_hline(yintercept = 34) + 
+  #geom_hline(yintercept = 35) +
+  labs(x = "Carapace width (mm)", y = "3rd left coxa width (mm)") +
+  #labs(x = NULL, y = "1st right coxa width (mm)") +
+  geom_point(alpha=0.5) + 
+  scale_y_continuous(limits = c(11,51), expand = c(0,0), breaks = c(20, 30, 40, 50))+ #let's set a consistent y axis.
+  scale_color_manual(values = c("#6FB9D6", "#FF5A3C"), guide="none")+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"))+
+  theme_adfg(font_family="Arial", box = FALSE)+ #might have to change point size.
+  geom_smooth(method = "lm", color = "black", linetype = "dashed", se = FALSE) 
+
+
+l1 <- l1 + labs(y=NULL) + theme(axis.ticks = element_line(linewidth=1.2),
+                                axis.ticks.length = unit(0.35, "cm"),
+                                legend.key.size = unit(1.4, "cm"),
+                                axis.text.x  = element_text(size = 26),
+                                axis.text.y  = element_text(size = 26),
+                                legend.position = c(0.25, 0.86),
+                                legend.text = element_text(
+                                  size = 26,
+                                  margin = margin(r = 20)
+                                )
+)
+l2 <- l2 + labs(y=NULL)+ theme(axis.ticks = element_line(linewidth=1.2),
+                               axis.ticks.length = unit(0.35, "cm"),
+                               axis.text.x  = element_text(size = 26),
+                               axis.text.y  = element_text(size = 26)
+)
+l3 <- l3 + labs(y=NULL, x=NULL) + theme(axis.ticks = element_line(linewidth=1.2),
+                                axis.ticks.length = unit(0.35, "cm"),
+                                axis.text.x  = element_text(size = 26),
+                                axis.text.y  = element_text(size = 26)
+)
+
+r1 <- r1 + labs(y=NULL) + theme(axis.ticks = element_line(linewidth=1.2),
+                                axis.ticks.length = unit(0.35, "cm"),
+                                axis.text.x  = element_text(size = 26),
+                                axis.text.y  = element_text(size = 26)
+)
+r2 <- r2 + labs(y=NULL) + theme(axis.ticks = element_line(linewidth=1.2),
+                                axis.ticks.length = unit(0.35, "cm"),
+                                axis.text.x  = element_text(size = 26),
+                                axis.text.y  = element_text(size = 26)
+)
+r3 <- r3 + labs(y=NULL, x=NULL) + theme(axis.ticks = element_line(linewidth=1.2),
+                                axis.ticks.length = unit(0.35, "cm"),
+                                axis.text.x  = element_text(size = 26),
+                                axis.text.y  = element_text(size = 26)
+)
+
+(l1 + r1) /
+  (l2 + r2) /
+  (l3 + r3) -> nolabs
+
+ggsave(plot = nolabs, filename = "figures/Coxa width carapace width poster version 3.png", width =12, height = 16, dpi = 300)
+
 
 #ggsave that poster
 
