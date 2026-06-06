@@ -465,7 +465,10 @@ r3 <- r3 + labs(y=NULL, x=NULL) + theme(axis.ticks = element_line(linewidth=1.2)
   (l2 + r2) /
   (l3 + r3) -> nolabs
 
-ggsave(plot = nolabs, filename = "figures/Coxa width carapace width poster version 3.png", width =12, height = 16, dpi = 300)
+nolabs + plot_annotation(caption = "Carapace width (mm)") +
+  theme(plot.caption = element_text(size= 30, hjust = 0.5, vjust=1))
+
+ggsave(plot = nolabs, filename = "figures/Coxa width carapace width poster version 4.png", width =12, height = 16, dpi = 300)
 
 
 #ggsave that poster
