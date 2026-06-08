@@ -201,5 +201,9 @@ cor_table <- sapply(areas, function(a) {
 rownames(cor_table) <- c(row_names, "N")
 print(round(cor_table, 3))
 
+write.csv(cor_table, "results/coxa_cw_correlations_by_area.csv")
+
+##graph st james - those are some weirdly weak correlations
+
 
 ##and run an ANCOVA
