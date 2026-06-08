@@ -5,6 +5,7 @@
 
 library(tidyverse)
 library(ggplot2)
+library(adfggraph)
 
 #pulled from Spencer's code:
 newdata <- read.csv("data/full crab allometry dataset_USE.csv", header = TRUE)
@@ -105,3 +106,100 @@ males_2025_table_wide <- males_2025 %>%
   mutate(count_total = rowSums(across(starts_with("count_"))))
 
 
+###data summary
+#males - my data frame
+dim(males_2025)
+dim(males_2017)
+summary(males$Carapace.width)
+
+yy <- ggplot(males) + aes(x= Carapace.width) + geom_histogram(bins = 10) +theme_adfg(box=FALSE)+
+  labs(x = "Carapace Width (mm)", y = "Count")
+ggsave("figures/2017_2025_histogram_nobox.png", yy, width = 6, height = 4)
+
+
+#######################################################################################################
+##let's check out the by-area correlation for coxa width-carapace length for both 2017 and 2025
+males.cor <- cor(males[, unlist(lapply(males, is.numeric))], use = "complete.obs")
+males_cor_2017 <- cor(males_2017[, unlist(lapply(males_2017, is.numeric))], use = "complete.obs")
+males_cor_2025 <- cor(males_2017[, unlist(lapply(males_2017, is.numeric))], use = "complete.obs")
+
+unique(males$Area)
+
+#St. James bay
+Area <- males %>% filter(Area == "St James Bay")
+L3_J<- cor(Area$Carapace.width, Area$Coxa.walking.leg.3.LEFT, use = "complete.obs")
+R3_J<- cor(Area$Carapace.width, Area$Coxa.walking.leg.3.RIGHT, use = "complete.obs")
+L2_J<-cor(Area$Carapace.width, Area$Coxa.walking.leg.2.LEFT, use = "complete.obs")
+R2_J<-cor(Area$Carapace.width, Area$Coxa.walking.leg.2.RIGHT, use = "complete.obs")
+L1_J<-cor(Area$Carapace.width, Area$Coxa.walking.leg.1.LEFT, use = "complete.obs")
+R1_J<-cor(Area$Carapace.width, Area$Coxa.walking.leg.1.RIGHT, use = "complete.obs")
+n_james <- nrow(Area)
+
+#Excursion
+Area <- males %>% filter(Area == "Excursion")
+L3_E<- cor(Area$Carapace.width, Area$Coxa.walking.leg.3.LEFT, use = "complete.obs")
+R3_E<- cor(Area$Carapace.width, Area$Coxa.walking.leg.3.RIGHT, use = "complete.obs")
+L2_E<-cor(Area$Carapace.width, Area$Coxa.walking.leg.2.LEFT, use = "complete.obs")
+R2_E<-cor(Area$Carapace.width, Area$Coxa.walking.leg.2.RIGHT, use = "complete.obs")
+L1_E<-cor(Area$Carapace.width, Area$Coxa.walking.leg.1.LEFT, use = "complete.obs")
+R1_E<-cor(Area$Carapace.width, Area$Coxa.walking.leg.1.RIGHT, use = "complete.obs")
+n_excursion <- nrow(Area)
+
+#Juneau
+Area <- males %>% filter(Area == "Juneau")
+L3_Ju<- cor(Area$Carapace.width, Area$Coxa.walking.leg.3.LEFT, use = "complete.obs")
+R3_Ju<- cor(Area$Carapace.width, Area$Coxa.walking.leg.3.RIGHT, use = "complete.obs")
+L2_Ju<-cor(Area$Carapace.width, Area$Coxa.walking.leg.2.LEFT, use = "complete.obs")
+R2_Ju<-cor(Area$Carapace.width, Area$Coxa.walking.leg.2.RIGHT, use = "complete.obs")
+L1_Ju<-cor(Area$Carapace.width, Area$Coxa.walking.leg.1.LEFT, use = "complete.obs")
+R1_Ju<-cor(Area$Carapace.width, Area$Coxa.walking.leg.1.RIGHT, use = "complete.obs")
+n_Juneau <- nrow(Area)
+
+#Peril
+Area <- males %>% filter(Area == "Peril Strait")
+L3_P<- cor(Area$Carapace.width, Area$Coxa.walking.leg.3.LEFT, use = "complete.obs")
+R3_P<- cor(Area$Carapace.width, Area$Coxa.walking.leg.3.RIGHT, use = "complete.obs")
+L2_P<-cor(Area$Carapace.width, Area$Coxa.walking.leg.2.LEFT, use = "complete.obs")
+R2_P<-cor(Area$Carapace.width, Area$Coxa.walking.leg.2.RIGHT, use = "complete.obs")
+L1_P<-cor(Area$Carapace.width, Area$Coxa.walking.leg.1.LEFT, use = "complete.obs")
+R1_P<-cor(Area$Carapace.width, Area$Coxa.walking.leg.1.RIGHT, use = "complete.obs")
+n_Peril <- nrow(Area)
+
+#Seymour
+Area <- males %>% filter(Area == "Seymour")
+L3_S<- cor(Area$Carapace.width, Area$Coxa.walking.leg.3.LEFT, use = "complete.obs")
+R3_S<- cor(Area$Carapace.width, Area$Coxa.walking.leg.3.RIGHT, use = "complete.obs")
+L2_S<-cor(Area$Carapace.width, Area$Coxa.walking.leg.2.LEFT, use = "complete.obs")
+R2_S<-cor(Area$Carapace.width, Area$Coxa.walking.leg.2.RIGHT, use = "complete.obs")
+L1_S<-cor(Area$Carapace.width, Area$Coxa.walking.leg.1.LEFT, use = "complete.obs")
+R1_S<-cor(Area$Carapace.width, Area$Coxa.walking.leg.1.RIGHT, use = "complete.obs")
+n_Seymour <- nrow(Area)
+
+#Gambier
+Area <- males %>% filter(Area == "Gambier")
+L3_G<- cor(Area$Carapace.width, Area$Coxa.walking.leg.3.LEFT, use = "complete.obs")
+R3_G<- cor(Area$Carapace.width, Area$Coxa.walking.leg.3.RIGHT, use = "complete.obs")
+L2_G<-cor(Area$Carapace.width, Area$Coxa.walking.leg.2.LEFT, use = "complete.obs")
+R2_G<-cor(Area$Carapace.width, Area$Coxa.walking.leg.2.RIGHT, use = "complete.obs")
+L1_G<-cor(Area$Carapace.width, Area$Coxa.walking.leg.1.LEFT, use = "complete.obs")
+R1_G<-cor(Area$Carapace.width, Area$Coxa.walking.leg.1.RIGHT, use = "complete.obs")
+n_Gambier <- nrow(Area)
+
+#make this a table:
+
+areas <- c("St James Bay", "Excursion", "Juneau", "Peril Strait", "Seymour", "Gambier")
+coxa_vars <- c("Coxa.walking.leg.1.RIGHT", "Coxa.walking.leg.2.RIGHT", "Coxa.walking.leg.3.RIGHT",
+               "Coxa.walking.leg.1.LEFT",  "Coxa.walking.leg.2.LEFT",  "Coxa.walking.leg.3.LEFT")
+row_names <- c("1R", "2R", "3R", "1L", "2L", "3L")
+
+cor_table <- sapply(areas, function(a) {
+  df <- males %>% filter(Area == a)
+  c(sapply(coxa_vars, function(v) cor(df$Carapace.width, df[[v]], use = "complete.obs")),
+    N = nrow(df))
+})
+
+rownames(cor_table) <- c(row_names, "N")
+print(round(cor_table, 3))
+
+
+##and run an ANCOVA
