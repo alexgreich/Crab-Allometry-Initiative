@@ -231,4 +231,7 @@ AIC(mod_null, mod)
 #check out St. James
 ############
 #crab size compared to the others- look at graphs
+ggplot(males) + aes(Carapace.width) + geom_density() + facet_wrap(~Area)
+ggplot(males) + aes(x= Carapace.width, y=Coxa.walking.leg.2.RIGHT) + geom_point() + geom_smooth(method="lm") + facet_wrap(~Area) 
 
+                                                                                                                          
