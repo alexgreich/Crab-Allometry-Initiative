@@ -185,6 +185,15 @@ L1_G<-cor(Area$Carapace.width, Area$Coxa.walking.leg.1.LEFT, use = "complete.obs
 R1_G<-cor(Area$Carapace.width, Area$Coxa.walking.leg.1.RIGHT, use = "complete.obs")
 n_Gambier <- nrow(Area)
 
+#QC overall correlations - all checks out :)
+males_clean <- males %>% filter(is.finite(Coxa.walking.leg.3.RIGHT))
+cor(males_clean$Carapace.width, males_clean$Coxa.walking.leg.3.LEFT)
+cor(males_clean$Carapace.width, males_clean$Coxa.walking.leg.3.RIGHT)
+cor(males_clean$Carapace.width, males_clean$Coxa.walking.leg.2.LEFT)
+cor(males_clean$Carapace.width, males_clean$Coxa.walking.leg.2.RIGHT)
+cor(males_clean$Carapace.width, males_clean$Coxa.walking.leg.1.LEFT)
+cor(males_clean$Carapace.width, males_clean$Coxa.walking.leg.1.RIGHT)
+
 #make this a table:
 
 areas <- c("St James Bay", "Excursion", "Juneau", "Peril Strait", "Seymour", "Gambier")
@@ -199,7 +208,7 @@ cor_table <- sapply(areas, function(a) {
 })
 
 rownames(cor_table) <- c(row_names, "N")
-print(round(cor_table, 3))
+cor_table <- round(cor_table, 3)
 
 write.csv(cor_table, "results/coxa_cw_correlations_by_area.csv")
 
@@ -207,3 +216,19 @@ write.csv(cor_table, "results/coxa_cw_correlations_by_area.csv")
 
 
 ##and run an ANCOVA
+males <- males %>% mutate(Area = as.factor(Area))
+
+mod <- lm(Coxa.walking.leg.2.RIGHT ~ Carapace.width*Area, data=males)
+summary(mod)
+anova(mod)
+
+mod_null <- lm(Coxa.walking.leg.2.RIGHT ~ Carapace.width + Area, data=males)
+anova(mod_null, mod)
+AIC(mod_null, mod)
+
+
+########
+#check out St. James
+############
+#crab size compared to the others- look at graphs
+
