@@ -12,4 +12,4 @@ Phase 1 of the analysis (correlations and linear models) is in "Allometry Code A
 
 "Table 1 and other things.R" creates additional figures and tables for the manuscript.
 
-"Appendix_A_pilot_data.R" runs the analyis for Appendix A, which uses the pilot data from 2017.
+"Appendix_A_pilot_data.R" runs the analysis for Appendix A, which uses the pilot data from 2017.
