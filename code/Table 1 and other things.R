@@ -22,13 +22,18 @@ males[, 'Sample.Number'] <- as.factor(males[, 'Sample.Number'])
 #filter for those collected in 2017
 males_2017 <- males %>% filter (Year == 2017)
 
-#histogram - look at my data
+#histogram - look at my data- looks intentional, idk
 ggplot(males_2017) + aes(Carapace.width) + geom_density()
 ggplot(males_2017) + aes(Carapace.width) + geom_histogram(binwidth = 10)
+ggplot(males_2017) + aes(Carapace.width) + geom_histogram(binwidth = 10) + facet_wrap(~Area)
+
+dim(males_2017) #221 
 
 #data summary
 length(males_2017$Carapace.width)
 summary(males_2017$Carapace.width)
+#how many males by area?
+males_2017 %>% group_by(Area) %>% summarise(count = n())
 
 #peek at 2025
 males_2025 <- males %>% filter(Year == 2025)
@@ -215,15 +220,47 @@ write.csv(cor_table, "results/coxa_cw_correlations_by_area.csv")
 ##graph st james - those are some weirdly weak correlations
 
 
-##and run an ANCOVA
+##Run linear models - AGR 11/25/26
+### separate by Legs please.
+#View(males)
 males <- males %>% mutate(Area = as.factor(Area))
+####RIGHT
 
-mod <- lm(Coxa.walking.leg.2.RIGHT ~ Carapace.width*Area, data=males)
-summary(mod)
-anova(mod)
+mod_R2_glob <- lm(Coxa.walking.leg.2.RIGHT ~ Carapace.width*Area, data=males)
+summary(mod_R2_glob)
+###interaction effect sign for cw and st 
+mod_R2_area <- lm(Coxa.walking.leg.2.RIGHT ~ Carapace.width + Area, data=males)
+summary(mod_R2_area)
+
+mod_R2_base <- lm(Coxa.walking.leg.2.RIGHT ~ Carapace.width, data=males)
+summary(mod_R2_base)
+
+AIC(mod_R2_glob, mod_R2_area, mod_R2_base)
+AICc(mod_R2_glob, mod_R2_area, mod_R2_base)
+
+library(performance)
+performance(mod_R2_glob)
+performance(mod_R2_area)
+performance(mod_R2_base)
+
+##try without seymour, gambier
+#males_test <- males %>% filter(Area != "Seymour" & Area != "Gambier")
+#mod_R2_glob_test <- lm(Coxa.walking.leg.2.RIGHT ~ Carapace.width*Area, data=males_test)
+#mod_R2_area_test <- lm(Coxa.walking.leg.2.RIGHT ~ Carapace.width+Area, data=males_test) 
+#mod_R2_base_test <- lm(Coxa.walking.leg.2.RIGHT ~ Carapace.width, data=males_test)
+#AIC(mod_R2_glob_test, mod_R2_area_test, mod_R2_base_test) #oh dang, the additive model fit best
+#performance(mod_R2_glob_test)
+#performance(mod_R2_area_test)
+#performance(mod_R2_base_test)
+
+
+
+
+
+####LEFT
+
 
 mod_null <- lm(Coxa.walking.leg.2.RIGHT ~ Carapace.width + Area, data=males)
-anova(mod_null, mod)
 AIC(mod_null, mod)
 
 

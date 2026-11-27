@@ -117,9 +117,36 @@ summary(model)
 model <- lm(males$Coxa.walking.leg.3.LEFT ~ males$Carapace.width)
 summary(model)
 
+##AGR HERE
+#alex looks at models with area
+model_2R_glob <- lm(Coxa.walking.leg.2.RIGHT ~ Carapace.width*Area, data=males)
+model_2R_add <- lm(Coxa.walking.leg.2.RIGHT ~ Carapace.width+Area, data=males)
+model_2R_base <- lm(Coxa.walking.leg.2.RIGHT ~ Carapace.width, data=males)
+library(performance)
+performance::compare_performance(model_2R_glob, model_2R_add, model_2R_base)
+##I'm selecting the additive model
+##look at it for all coxa/carapace relationships
+model_2L_glob <- lm(Coxa.walking.leg.2.LEFT ~ Carapace.width*Area, data=males)
+model_2L_add <- lm(Coxa.walking.leg.2.LEFT ~ Carapace.width+Area, data=males)
+model_2L_base <- lm(Coxa.walking.leg.2.LEFT ~ Carapace.width, data=males)
+performance::compare_performance(model_2L_glob, model_2L_add, model_2L_base)
 
-plot(males$Carapace.width ~ males$Coxa.walking.leg.2.RIGHT)
-abline()
+model_1R_add <- lm(Coxa.walking.leg.1.RIGHT ~ Carapace.width+Area, data=males)
+summary(model_1R_add)
+model_3R_add <- lm(Coxa.walking.leg.3.RIGHT ~ Carapace.width+Area, data=males)
+summary(model_3R_add)
+model_1L_add <- lm(Coxa.walking.leg.1.LEFT ~ Carapace.width+Area, data=males)
+summary(model_1L_add)
+model_3L_add <- lm(Coxa.walking.leg.3.LEFT ~ Carapace.width+Area, data=males)
+summary(model_3L_add)
+
+#make a table or plot to compare model slopes and residual SE's
+
+
+
+
+#plot(males$Carapace.width ~ males$Coxa.walking.leg.2.RIGHT)
+#abline()
 
 
 
@@ -468,7 +495,7 @@ r3 <- r3 + labs(y=NULL, x=NULL) + theme(axis.ticks = element_line(linewidth=1.2)
 nolabs + plot_annotation(caption = "Carapace width (mm)") +
   theme(plot.caption = element_text(size= 30, hjust = 0.5, vjust=1))
 
-ggsave(plot = nolabs, filename = "figures/Coxa width carapace width poster version 4.png", width =12, height = 16, dpi = 300)
+#ggsave(plot = nolabs, filename = "figures/Coxa width carapace width poster version 4.png", width =12, height = 16, dpi = 300)
 
 
 #ggsave that poster
@@ -699,23 +726,9 @@ thresholds <- 28:33  # the coxa thresholds you care about
 
 
 
-#AGR 12/15/25
 
 
 
-###AGR 12/12/25
-##I need to put something in the poster.
-##about correlation
-##I could 1: show carapace/length correlation for all legs
-## 2: show carapace/correlation for the second walking leg -is correlation the tightest here
-## 3 : show carapace/correlation for the max leg
-
-##I think #2 + a table of CL and coxa correlation for all (L+R legs, 1,2,3)
-
-#the graph:
-
-
-#the table:
 
 
 
